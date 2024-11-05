@@ -260,5 +260,17 @@ namespace PhoneWarehouse.Controllers
                 command.ExecuteNonQuery();
             }
         }
+        public bool UpdateExportDetail(int id, int quantity, decimal unitprice)
+        {
+            using var connection = _connectDB.GetConnection();
+            connection.Open();
+            using var command = new SqlCommand(@"UPDATE EXPORTDETAIL 
+                                                     SET Quantity = @Quantity, UnitPrice = @UnitPrice
+                                                     WHERE Id = @Id", connection);
+            command.Parameters.AddWithValue("@Quantity", quantity);
+            command.Parameters.AddWithValue("@UnitPrice", unitprice);
+            command.Parameters.AddWithValue("@Id", id);
+            return command.ExecuteNonQuery() > 0;
+        }
     }
 }

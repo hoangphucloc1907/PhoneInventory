@@ -14,6 +14,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = PhoneInventory
-build_property.ProjectDir = C:\Loc\Subject\.net\PhoneInventory\PhoneInventory\PhoneInventory\
+build_property.ProjectDir = C:\Github\PhoneInventory\PhoneInventory\PhoneInventory\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
