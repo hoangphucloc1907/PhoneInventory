@@ -94,7 +94,7 @@ namespace PhoneWarehouse.Views
         }
         private bool ValidateSearch()
         {
-            if (string.IsNullOrEmpty(txtSearch.Text)) 
+            if (string.IsNullOrEmpty(txtSearch.Text))
             {
                 MessageBox.Show("Dữ liệu không được để trống", "Thông báo", MessageBoxButtons.OK);
                 return false;
@@ -145,7 +145,7 @@ namespace PhoneWarehouse.Views
             }
         }
 
-        private void btnDelete_Click_1(object sender, EventArgs e)
+        private void btnDelete_Click(object sender, EventArgs e)
         {
             if (ValidateInput())
             {
@@ -167,11 +167,14 @@ namespace PhoneWarehouse.Views
         {
             id = 0;
             txtUserName.Clear();
+            txtPassword.Clear();
             txtLastName.Clear();
             txtFirstName.Clear();
             txtPhone.Clear();
             txtAddress.Clear();
             cbGender.SelectedIndex = -1;
+            radioAdmin.Checked = false;
+            radioEmp.Checked = false;
             Showdata();
         }
 
@@ -217,6 +220,11 @@ namespace PhoneWarehouse.Views
         {
             txtSearch.Clear();
             Showdata();
+        }
+
+        private void btnSave_Click_1(object sender, EventArgs e)
+        {
+
         }
     }
 }

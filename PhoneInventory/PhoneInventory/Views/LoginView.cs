@@ -15,62 +15,56 @@ namespace PhoneWarehouse.Views
 {
     public partial class LoginView : Form
     {
-        private HomeView parentForm;
-        private readonly UserController _userController; 
+        private readonly HomeView _parentForm;
+        private readonly UserController _userController;
         public string Id_account { get; private set; }
+
         public LoginView(HomeView parent)
         {
             InitializeComponent();
             _userController = new UserController();
-            parentForm = parent;
+            _parentForm = parent;
             txtPassword.PasswordChar = '*';
         }
+
         private void ShowPass_CheckedChanged(object sender, EventArgs e)
         {
-            if (ShowPass.Checked)
-            {
-                txtPassword.PasswordChar = '\0';
-            }
-            else
-            {
-                txtPassword.PasswordChar = '*';
-            }
+            txtPassword.PasswordChar = ShowPass.Checked ? '\0' : '*';
         }
+
         private void CloseOpenForms()
         {
-            List<Form> formsToClose = new List<Form>();
-
             foreach (Form form in Application.OpenForms)
             {
-                if (form != this && form != parentForm)
+                if (form != this && form != _parentForm)
                 {
-                    formsToClose.Add(form);
+                    form.Close();
                 }
             }
-
-            // Đóng các form trong danh sách
-            foreach (Form form in formsToClose)
-            {
-                form.Close();
-            }
         }
+
         private void buttonSignIn_Click(object sender, EventArgs e)
         {
             string account = txtAccount.Text;
             string password = txtPassword.Text;
             string role = _userController.Login(account, password);
-            if (!string.IsNullOrEmpty(role))
+
+            if (string.IsNullOrEmpty(role))
             {
-                parentForm.log = this; 
-                int user_Id = _userController.GetUserIdByUsername(account);
-                parentForm.Id_account = user_Id; 
-                parentForm.UserRole = role;
+                _parentForm.log = this;
+                int userId = _userController.GetUserIdByUsername(account);
+                _parentForm.Id_account = userId;
+                _parentForm.UserRole = role;
 
                 MessageBox.Show("Đăng nhập thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                parentForm.LoginToolStripMenuItem.Visible = false;
-                parentForm.UpdateLoginStatus(true);
-                CloseOpenForms(); 
+                _parentForm.LoginToolStripMenuItem.Visible = false;
+                _parentForm.UpdateLoginStatus(true);
+                CloseOpenForms();
                 this.Hide();
+            }
+            else
+            {
+                MessageBox.Show("Đăng nhập thất bại. Vui lòng kiểm tra lại tên đăng nhập và mật khẩu.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

@@ -160,7 +160,7 @@ namespace PhoneWarehouse.Views
         {
             this.Close();
         }
-        private void btnX_Click_1(object sender, EventArgs e)
+        private void btnX_Click(object sender, EventArgs e)
         {
             txtSearch.Clear();
             Showdata();

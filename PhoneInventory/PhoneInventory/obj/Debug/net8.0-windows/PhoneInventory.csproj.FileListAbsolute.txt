@@ -31,3 +31,4 @@ C:\Loc\Subject\.net\PhoneInventory\PhoneInventory\PhoneInventory\obj\Debug\net8.
 C:\Loc\Subject\.net\PhoneInventory\PhoneInventory\PhoneInventory\obj\Debug\net8.0-windows\PhoneInventory.pdb
 C:\Loc\Subject\.net\PhoneInventory\PhoneInventory\PhoneInventory\obj\Debug\net8.0-windows\PhoneInventory.genruntimeconfig.cache
 C:\Loc\Subject\.net\PhoneInventory\PhoneInventory\PhoneInventory\obj\Debug\net8.0-windows\ref\PhoneInventory.dll
+C:\Loc\Subject\.net\PhoneInventory\PhoneInventory\PhoneInventory\obj\Debug\net8.0-windows\PhoneInventory.sourcelink.json
