@@ -29,14 +29,6 @@
         private void InitializeComponent()
         {
             Viewdata = new DataGridView();
-            id_product = new DataGridViewTextBoxColumn();
-            productcode = new DataGridViewTextBoxColumn();
-            productname = new DataGridViewTextBoxColumn();
-            category_id = new DataGridViewTextBoxColumn();
-            standartcost = new DataGridViewTextBoxColumn();
-            listprice = new DataGridViewTextBoxColumn();
-            Quantity = new DataGridViewTextBoxColumn();
-            decription = new DataGridViewTextBoxColumn();
             groupBox1 = new GroupBox();
             btnX = new Button();
             btnSearch = new Button();
@@ -61,6 +53,13 @@
             label2 = new Label();
             label4 = new Label();
             label3 = new Label();
+            id_product = new DataGridViewTextBoxColumn();
+            productcode = new DataGridViewTextBoxColumn();
+            productname = new DataGridViewTextBoxColumn();
+            category_id = new DataGridViewTextBoxColumn();
+            standartcost = new DataGridViewTextBoxColumn();
+            listprice = new DataGridViewTextBoxColumn();
+            decription = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)Viewdata).BeginInit();
             groupBox1.SuspendLayout();
             groupBox2.SuspendLayout();
@@ -72,7 +71,7 @@
             Viewdata.AllowUserToDeleteRows = false;
             Viewdata.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             Viewdata.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            Viewdata.Columns.AddRange(new DataGridViewColumn[] { id_product, productcode, productname, category_id, standartcost, listprice, Quantity, decription });
+            Viewdata.Columns.AddRange(new DataGridViewColumn[] { id_product, productcode, productname, category_id, standartcost, listprice, decription });
             Viewdata.Dock = DockStyle.Fill;
             Viewdata.Location = new Point(0, 288);
             Viewdata.Margin = new Padding(5);
@@ -82,62 +81,6 @@
             Viewdata.Size = new Size(2534, 1057);
             Viewdata.TabIndex = 41;
             Viewdata.CellClick += Viewdata_CellClick;
-            // 
-            // id_product
-            // 
-            id_product.DataPropertyName = "id";
-            id_product.HeaderText = "ID";
-            id_product.MinimumWidth = 6;
-            id_product.Name = "id_product";
-            // 
-            // productcode
-            // 
-            productcode.DataPropertyName = "productcode";
-            productcode.HeaderText = "Mã sản phẩm";
-            productcode.MinimumWidth = 6;
-            productcode.Name = "productcode";
-            // 
-            // productname
-            // 
-            productname.DataPropertyName = "productname";
-            productname.HeaderText = "Tên sản phẩm";
-            productname.MinimumWidth = 6;
-            productname.Name = "productname";
-            // 
-            // category_id
-            // 
-            category_id.DataPropertyName = "CategoryId";
-            category_id.HeaderText = "Danh mục";
-            category_id.MinimumWidth = 6;
-            category_id.Name = "category_id";
-            // 
-            // standartcost
-            // 
-            standartcost.DataPropertyName = "StandardCost";
-            standartcost.HeaderText = "Giá niêm yết";
-            standartcost.MinimumWidth = 6;
-            standartcost.Name = "standartcost";
-            // 
-            // listprice
-            // 
-            listprice.DataPropertyName = "listprice";
-            listprice.HeaderText = "Giá nhập";
-            listprice.MinimumWidth = 6;
-            listprice.Name = "listprice";
-            // 
-            // Quantity
-            // 
-            Quantity.DataPropertyName = "Quantity";
-            Quantity.HeaderText = "Số lượng";
-            Quantity.MinimumWidth = 6;
-            Quantity.Name = "Quantity";
-            // 
-            // decription
-            // 
-            decription.DataPropertyName = "Description";
-            decription.HeaderText = "Mô tả";
-            decription.MinimumWidth = 6;
-            decription.Name = "decription";
             // 
             // groupBox1
             // 
@@ -313,7 +256,7 @@
             // txtStandardCost
             // 
             txtStandardCost.Font = new Font("Segoe UI", 15F);
-            txtStandardCost.Location = new Point(267, 172);
+            txtStandardCost.Location = new Point(269, 172);
             txtStandardCost.Margin = new Padding(5);
             txtStandardCost.Name = "txtStandardCost";
             txtStandardCost.Size = new Size(249, 61);
@@ -421,6 +364,55 @@
             label3.Text = "Số lượng";
             label3.TextAlign = ContentAlignment.MiddleCenter;
             // 
+            // id_product
+            // 
+            id_product.DataPropertyName = "id";
+            id_product.HeaderText = "ID";
+            id_product.MinimumWidth = 6;
+            id_product.Name = "id_product";
+            // 
+            // productcode
+            // 
+            productcode.DataPropertyName = "productcode";
+            productcode.HeaderText = "Mã sản phẩm";
+            productcode.MinimumWidth = 6;
+            productcode.Name = "productcode";
+            // 
+            // productname
+            // 
+            productname.DataPropertyName = "productname";
+            productname.HeaderText = "Tên sản phẩm";
+            productname.MinimumWidth = 6;
+            productname.Name = "productname";
+            // 
+            // category_id
+            // 
+            category_id.DataPropertyName = "CategoryId";
+            category_id.HeaderText = "Danh mục";
+            category_id.MinimumWidth = 6;
+            category_id.Name = "category_id";
+            // 
+            // standartcost
+            // 
+            standartcost.DataPropertyName = "StandardCost";
+            standartcost.HeaderText = "Giá nhập";
+            standartcost.MinimumWidth = 6;
+            standartcost.Name = "standartcost";
+            // 
+            // listprice
+            // 
+            listprice.DataPropertyName = "listprice";
+            listprice.HeaderText = "Giá niêm yết";
+            listprice.MinimumWidth = 6;
+            listprice.Name = "listprice";
+            // 
+            // decription
+            // 
+            decription.DataPropertyName = "Description";
+            decription.HeaderText = "Mô tả";
+            decription.MinimumWidth = 6;
+            decription.Name = "decription";
+            // 
             // ProductView
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
@@ -444,14 +436,6 @@
 
         #endregion
         private DataGridView Viewdata;
-        private DataGridViewTextBoxColumn id_product;
-        private DataGridViewTextBoxColumn productcode;
-        private DataGridViewTextBoxColumn productname;
-        private DataGridViewTextBoxColumn category_id;
-        private DataGridViewTextBoxColumn standartcost;
-        private DataGridViewTextBoxColumn listprice;
-        private DataGridViewTextBoxColumn Quantity;
-        private DataGridViewTextBoxColumn decription;
         private GroupBox groupBox1;
         private Button btnX;
         private Button btnSearch;
@@ -476,5 +460,12 @@
         private Label label2;
         private Label label4;
         private Label label3;
+        private DataGridViewTextBoxColumn id_product;
+        private DataGridViewTextBoxColumn productcode;
+        private DataGridViewTextBoxColumn productname;
+        private DataGridViewTextBoxColumn category_id;
+        private DataGridViewTextBoxColumn standartcost;
+        private DataGridViewTextBoxColumn listprice;
+        private DataGridViewTextBoxColumn decription;
     }
 }

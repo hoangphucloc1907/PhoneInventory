@@ -39,7 +39,7 @@ namespace PhoneInventory.Views
         {
             productCode.DataSource = _productController.GetProductCode();
             productCode.DisplayMember = "ProductCode";
-            productCode.ValueMember = "Id";
+            productCode.ValueMember = "ProductId";
             txtEmployeeName.Text = _userController.GetFirstnameById(CurrentId_account);
             txtEmployeeName.Enabled = false;
             cbCustomer.DataSource = _customerController.GetCustomerNames();
@@ -66,11 +66,13 @@ namespace PhoneInventory.Views
         private void UpdateProductDetails(int rowIndex)
         {
             int productId = (int)dataGridViewExport.Rows[rowIndex].Cells["ProductCode"].Value;
-            var selectedProduct = _productController.GetProductCode().FirstOrDefault(p => p.Id == productId);
+            var selectedProduct = _productController.GetProductCode().FirstOrDefault(p => p.ProductId == productId);
 
             if (selectedProduct != null)
             {
                 dataGridViewExport.Rows[rowIndex].Cells["ProductName"].Value = selectedProduct.ProductName;
+                dataGridViewExport.Rows[rowIndex].Cells["Stock"].Value = selectedProduct.StockBalance;
+                dataGridViewExport.Rows[rowIndex].Cells["UnitPrice"].Value = selectedProduct.Product.ListPrice;
             }
         }
 

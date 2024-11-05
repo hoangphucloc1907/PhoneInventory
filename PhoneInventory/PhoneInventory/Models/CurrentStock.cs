@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PhoneInventory.Models
 {
-    public class CurrentStock : IModel
+    internal class CurrentStock : IModel
     {
         public int ProductId { get; set; }
         public string ProductCode { get; set; }
@@ -15,5 +15,6 @@ namespace PhoneInventory.Models
         public int TotalImported { get; set; }
         public int TotalExported { get; set; }
         public int StockBalance { get; set; }
+        public Product? Product { get; set; }
     }
 }

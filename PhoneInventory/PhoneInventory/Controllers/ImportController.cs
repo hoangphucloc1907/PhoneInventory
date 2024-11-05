@@ -158,13 +158,35 @@ namespace PhoneWarehouse.Controllers
         {
             using var connection = _connectDB.GetConnection();
             connection.Open();
+
+            // Lưu chi tiết nhập kho
             using var command = new SqlCommand(@"INSERT INTO IMPORTDETAIL (ImportId, ProductId, Quantity, UnitPrice)
-                                                     VALUES (@ImportId, @ProductId, @Quantity, @UnitPrice)", connection);
+                                         VALUES (@ImportId, @ProductId, @Quantity, @UnitPrice)", connection);
             command.Parameters.AddWithValue("@ImportId", importId);
             command.Parameters.AddWithValue("@ProductId", productId);
             command.Parameters.AddWithValue("@Quantity", quantity);
             command.Parameters.AddWithValue("@UnitPrice", unitPrice);
             command.ExecuteNonQuery();
+
+            // Cập nhật StandardCost và ListPrice trong bảng Product nếu ImportDate mới nhất
+            using var updateCommand = new SqlCommand(@"UPDATE Product
+                                               SET StandardCost = @UnitPrice,
+                                                   ListPrice = @UnitPrice
+                                               WHERE Id = @ProductId
+                                               AND EXISTS (
+                                                   SELECT 1 FROM IMPORT i
+                                                   WHERE i.Id = @ImportId
+                                                   AND i.ImportDate = (
+                                                       SELECT MAX(ImportDate) 
+                                                       FROM IMPORT i2
+                                                       JOIN IMPORTDETAIL id2 ON i2.Id = id2.ImportId
+                                                       WHERE id2.ProductId = @ProductId
+                                                   )
+                                               )", connection);
+            updateCommand.Parameters.AddWithValue("@UnitPrice", unitPrice);
+            updateCommand.Parameters.AddWithValue("@ProductId", productId);
+            updateCommand.Parameters.AddWithValue("@ImportId", importId);
+            updateCommand.ExecuteNonQuery();
         }
 
         public bool UpdateImportDetail(int id, int quantity, decimal unitprice)

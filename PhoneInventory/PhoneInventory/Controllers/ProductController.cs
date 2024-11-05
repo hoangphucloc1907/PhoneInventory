@@ -215,12 +215,12 @@ namespace PhoneWarehouse.Controllers
             return result != null ? (string)result : string.Empty;
         }
 
-        public List<Product> GetProductNames()
+        public List<Product> GetProductPrice()
         {
             var products = new List<Product>();
             using var connection = _connectDB.GetConnection();
             connection.Open();
-            using var command = new SqlCommand(@"SELECT Id, ProductName, ListPrice FROM PRODUCT", connection);
+            using var command = new SqlCommand(@"SELECT Id, ListPrice FROM PRODUCT", connection);
             using var reader = command.ExecuteReader();
             while (reader.Read())
             {
@@ -234,24 +234,32 @@ namespace PhoneWarehouse.Controllers
             return products;
         }
 
-        public List<Product> GetProductCode()
+        public List<CurrentStock> GetProductCode()
         {
-            var products = new List<Product>();
+            var currentStocks = new List<CurrentStock>();
             using var connection = _connectDB.GetConnection();
             connection.Open();
-            using var command = new SqlCommand("SELECT Id, ProductCode, ProductName FROM PRODUCT", connection);
+            using var command = new SqlCommand(@"SELECT ct.ProductId, ct.ProductCode, ct.ProductName, ct.StockBalance, p.ListPrice 
+                                                    FROM CurrentStock ct
+                                                    JOIN Product p ON p.Id = ct.ProductId", connection);
             using var reader = command.ExecuteReader();
             while (reader.Read())
             {
-                products.Add(new Product
+                currentStocks.Add(new CurrentStock
                 {
-                    Id = reader.GetInt32(0),
+                    ProductId = reader.GetInt32(0),
                     ProductCode = reader.GetString(1),
-                    ProductName = reader.GetString(2) 
+                    ProductName = reader.GetString(2),
+                    StockBalance = reader.GetInt32(3),
+                    Product = new Product
+                    {
+                        ListPrice = reader.GetDecimal(4)
+                    }
                 });
             }
-            return products;
+            return currentStocks;
         }
+
 
         public bool LoadCurrentStock()
         {

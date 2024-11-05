@@ -30,11 +30,6 @@
         {
             dataGridViewExportShow = new DataGridView();
             dataGridViewExport = new DataGridView();
-            productCode = new DataGridViewComboBoxColumn();
-            productName = new DataGridViewTextBoxColumn();
-            Quantity = new DataGridViewTextBoxColumn();
-            unitPrice = new DataGridViewTextBoxColumn();
-            total = new DataGridViewTextBoxColumn();
             groupBox2 = new GroupBox();
             txtEmployeeName = new TextBox();
             label1 = new Label();
@@ -50,6 +45,12 @@
             btnDelete = new Button();
             btnEdit = new Button();
             btnSave = new Button();
+            productCode = new DataGridViewComboBoxColumn();
+            productName = new DataGridViewTextBoxColumn();
+            Stock = new DataGridViewTextBoxColumn();
+            Quantity = new DataGridViewTextBoxColumn();
+            unitPrice = new DataGridViewTextBoxColumn();
+            total = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)dataGridViewExportShow).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridViewExport).BeginInit();
             groupBox2.SuspendLayout();
@@ -72,7 +73,7 @@
             dataGridViewExport.AllowUserToOrderColumns = true;
             dataGridViewExport.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridViewExport.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewExport.Columns.AddRange(new DataGridViewColumn[] { productCode, productName, Quantity, unitPrice, total });
+            dataGridViewExport.Columns.AddRange(new DataGridViewColumn[] { productCode, productName, Stock, Quantity, unitPrice, total });
             dataGridViewExport.Dock = DockStyle.Left;
             dataGridViewExport.Location = new Point(0, 239);
             dataGridViewExport.Margin = new Padding(5);
@@ -82,43 +83,6 @@
             dataGridViewExport.Size = new Size(1007, 1072);
             dataGridViewExport.TabIndex = 53;
             dataGridViewExport.CellValueChanged += dataGridViewExport_CellValueChanged;
-            // 
-            // productCode
-            // 
-            productCode.DataPropertyName = "ProductCode";
-            productCode.HeaderText = "Mã sản phẩm";
-            productCode.MinimumWidth = 6;
-            productCode.Name = "productCode";
-            productCode.Resizable = DataGridViewTriState.True;
-            productCode.SortMode = DataGridViewColumnSortMode.Automatic;
-            // 
-            // productName
-            // 
-            productName.DataPropertyName = "ProductName";
-            productName.HeaderText = "Tên sản phẩm";
-            productName.MinimumWidth = 6;
-            productName.Name = "productName";
-            // 
-            // Quantity
-            // 
-            Quantity.DataPropertyName = "Quantity";
-            Quantity.HeaderText = "Số lượng";
-            Quantity.MinimumWidth = 6;
-            Quantity.Name = "Quantity";
-            // 
-            // unitPrice
-            // 
-            unitPrice.DataPropertyName = "UnitPrice";
-            unitPrice.HeaderText = "Đơn giá";
-            unitPrice.MinimumWidth = 6;
-            unitPrice.Name = "unitPrice";
-            // 
-            // total
-            // 
-            total.DataPropertyName = "Total";
-            total.HeaderText = "Tổng giá";
-            total.MinimumWidth = 6;
-            total.Name = "total";
             // 
             // groupBox2
             // 
@@ -288,6 +252,52 @@
             btnSave.UseVisualStyleBackColor = true;
             btnSave.Click += btnSave_Click;
             // 
+            // productCode
+            // 
+            productCode.DataPropertyName = "ProductCode";
+            productCode.HeaderText = "Mã sản phẩm";
+            productCode.MinimumWidth = 6;
+            productCode.Name = "productCode";
+            productCode.Resizable = DataGridViewTriState.True;
+            productCode.SortMode = DataGridViewColumnSortMode.Automatic;
+            // 
+            // productName
+            // 
+            productName.DataPropertyName = "ProductName";
+            productName.HeaderText = "Tên sản phẩm";
+            productName.MinimumWidth = 6;
+            productName.Name = "productName";
+            productName.ReadOnly = true;
+            // 
+            // Stock
+            // 
+            Stock.HeaderText = "Tồn kho";
+            Stock.MinimumWidth = 10;
+            Stock.Name = "Stock";
+            Stock.ReadOnly = true;
+            // 
+            // Quantity
+            // 
+            Quantity.DataPropertyName = "Quantity";
+            Quantity.HeaderText = "Số lượng";
+            Quantity.MinimumWidth = 6;
+            Quantity.Name = "Quantity";
+            // 
+            // unitPrice
+            // 
+            unitPrice.DataPropertyName = "UnitPrice";
+            unitPrice.HeaderText = "Đơn giá";
+            unitPrice.MinimumWidth = 6;
+            unitPrice.Name = "unitPrice";
+            unitPrice.ReadOnly = true;
+            // 
+            // total
+            // 
+            total.DataPropertyName = "Total";
+            total.HeaderText = "Tổng giá";
+            total.MinimumWidth = 6;
+            total.Name = "total";
+            // 
             // ExportView
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
@@ -314,11 +324,6 @@
 
         private DataGridView dataGridViewExportShow;
         private DataGridView dataGridViewExport;
-        private DataGridViewComboBoxColumn productCode;
-        private DataGridViewTextBoxColumn productName;
-        private DataGridViewTextBoxColumn Quantity;
-        private DataGridViewTextBoxColumn unitPrice;
-        private DataGridViewTextBoxColumn total;
         private GroupBox groupBox2;
         private TextBox txtEmployeeName;
         private Label label1;
@@ -334,5 +339,11 @@
         private Button btnDelete;
         private Button btnEdit;
         private Button btnSave;
+        private DataGridViewComboBoxColumn productCode;
+        private DataGridViewTextBoxColumn productName;
+        private DataGridViewTextBoxColumn Stock;
+        private DataGridViewTextBoxColumn Quantity;
+        private DataGridViewTextBoxColumn unitPrice;
+        private DataGridViewTextBoxColumn total;
     }
 }

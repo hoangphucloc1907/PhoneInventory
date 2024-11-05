@@ -36,7 +36,7 @@ namespace PhoneWarehouse.Views
         {
             productCode.DataSource = _productController.GetProductCode();
             productCode.DisplayMember = "ProductCode";
-            productCode.ValueMember = "Id";
+            productCode.ValueMember = "ProductId";
             txtEmployeeName.Text = _userController.GetFirstnameById(CurrentId_account);
             txtEmployeeName.Enabled = false;
             cbSupplier.DataSource = _supplierController.GetSuplliers();
@@ -66,7 +66,7 @@ namespace PhoneWarehouse.Views
         private void UpdateProductDetails(int rowIndex)
         {
             int productId = (int)dataGridViewImport.Rows[rowIndex].Cells["ProductCode"].Value;
-            var selectedProduct = _productController.GetProductCode().FirstOrDefault(p => p.Id == productId);
+            var selectedProduct = _productController.GetProductCode().FirstOrDefault(p => p.ProductId == productId);
 
             if (selectedProduct != null)
             {

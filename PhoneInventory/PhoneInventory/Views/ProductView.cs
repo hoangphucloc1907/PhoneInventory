@@ -119,7 +119,7 @@ namespace PhoneWarehouse.Views
                 var product = CreateProductFromInput();
                 if (_productController.Upsert(product))
                 {
-                    MessageBox.Show("Đã sản phâm vào kho thành công", "Thông báo", MessageBoxButtons.OK);
+                    MessageBox.Show("Thêm sản phâm thành công", "Thông báo", MessageBoxButtons.OK);
                     Showdata();
                 }
                 else
