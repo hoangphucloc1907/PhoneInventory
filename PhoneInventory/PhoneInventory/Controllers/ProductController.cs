@@ -1,4 +1,5 @@
-﻿using PhoneWarehouse.Models;
+﻿using PhoneInventory.Models;
+using PhoneWarehouse.Models;
 using PhoneWarehouse.Utils;
 using System;
 using System.Collections.Generic;
@@ -250,6 +251,28 @@ namespace PhoneWarehouse.Controllers
                 });
             }
             return products;
+        }
+
+        public bool LoadCurrentStock()
+        {
+            Items.Clear(); // Assuming Items is a list to store the stock data
+            using var connection = _connectDB.GetConnection();
+            using var command = new SqlCommand(@"SELECT ProductId, ProductCode, ProductName, TotalImported, TotalExported, StockBalance FROM CurrentStock", connection);
+            connection.Open();
+            using var reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                Items.Add(new CurrentStock
+                {
+                    ProductId = reader.GetInt32(0),
+                    ProductCode = reader.GetString(1),
+                    ProductName = reader.GetString(2),
+                    TotalImported = reader.GetInt32(3),
+                    TotalExported = reader.GetInt32(4),
+                    StockBalance = reader.GetInt32(5)
+                });
+            }
+            return Items.Count > 0;
         }
     }
 }

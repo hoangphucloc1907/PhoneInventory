@@ -1,7 +1,6 @@
 C:\Loc\Subject\.net\PhoneInventory\PhoneInventory\PhoneInventory\obj\Debug\net8.0-windows\PhoneInventory.csproj.AssemblyReference.cache
 C:\Loc\Subject\.net\PhoneInventory\PhoneInventory\PhoneInventory\obj\Debug\net8.0-windows\PhoneWarehouse.Views.CategoryView.resources
 C:\Loc\Subject\.net\PhoneInventory\PhoneInventory\PhoneInventory\obj\Debug\net8.0-windows\PhoneWarehouse.Views.CustomerView.resources
-C:\Loc\Subject\.net\PhoneInventory\PhoneInventory\PhoneInventory\obj\Debug\net8.0-windows\PhoneWarehouse.Views.ExportView.resources
 C:\Loc\Subject\.net\PhoneInventory\PhoneInventory\PhoneInventory\obj\Debug\net8.0-windows\PhoneWarehouse.Views.HomeView.resources
 C:\Loc\Subject\.net\PhoneInventory\PhoneInventory\PhoneInventory\obj\Debug\net8.0-windows\PhoneWarehouse.Views.ImportView.resources
 C:\Loc\Subject\.net\PhoneInventory\PhoneInventory\PhoneInventory\obj\Debug\net8.0-windows\PhoneWarehouse.Views.LoginView.resources
@@ -32,3 +31,5 @@ C:\Loc\Subject\.net\PhoneInventory\PhoneInventory\PhoneInventory\obj\Debug\net8.
 C:\Loc\Subject\.net\PhoneInventory\PhoneInventory\PhoneInventory\obj\Debug\net8.0-windows\PhoneInventory.genruntimeconfig.cache
 C:\Loc\Subject\.net\PhoneInventory\PhoneInventory\PhoneInventory\obj\Debug\net8.0-windows\ref\PhoneInventory.dll
 C:\Loc\Subject\.net\PhoneInventory\PhoneInventory\PhoneInventory\obj\Debug\net8.0-windows\PhoneInventory.sourcelink.json
+C:\Loc\Subject\.net\PhoneInventory\PhoneInventory\PhoneInventory\obj\Debug\net8.0-windows\PhoneInventory.Views.ExportView.resources
+C:\Loc\Subject\.net\PhoneInventory\PhoneInventory\PhoneInventory\obj\Debug\net8.0-windows\PhoneInventory.Views.CurrentStockView.resources

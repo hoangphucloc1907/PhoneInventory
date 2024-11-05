@@ -20,53 +20,52 @@ namespace PhoneWarehouse.Controllers
             _connectDB = new ConnectDB();
         }
 
-        private SqlCommand CreateCommand(SqlConnection connection, string query, ExportDetail exportDetail = null, object id = null, Export exportModel = null)
-        {
-            var command = new SqlCommand(query, connection);
-            if (exportDetail != null)
-            {
-                command.Parameters.AddWithValue("@ExportId", exportDetail.ExportId);
-                command.Parameters.AddWithValue("@ProductId", exportDetail.ProductId);
-                command.Parameters.AddWithValue("@Quantity", exportDetail.Quantity);
-                command.Parameters.AddWithValue("@UnitPrice", exportDetail.UnitPrice);
-                command.Parameters.AddWithValue("@Id", exportDetail.Id);
-            }
-            if (id != null)
-            {
-                command.Parameters.AddWithValue("@Id", id);
-            }
-            if (exportModel != null)
-            {
-                command.Parameters.AddWithValue("@CustomerId", exportModel.CustomerId);
-                command.Parameters.AddWithValue("@EmployeeId", exportModel.EmployeeId);
-                command.Parameters.AddWithValue("@ExportDate", exportModel.ExportDate.Date);
-            }
-            return command;
-        }
-
         public bool Create(IModel model)
         {
             if (model is not ExportDetail exportDetail) return false;
-            return ExecuteNonQuery(@"INSERT INTO EXPORTDETAIL (ExportId, ProductId, Quantity, UnitPrice)
-                                         VALUES (@ExportId, @ProductId, @Quantity, @UnitPrice)", exportDetail);
+            using var connection = _connectDB.GetConnection();
+            connection.Open();
+            using var command = new SqlCommand(@"INSERT INTO EXPORTDETAIL (ExportId, ProductId, Quantity, UnitPrice)
+                                                     VALUES (@ExportId, @ProductId, @Quantity, @UnitPrice)", connection);
+            command.Parameters.AddWithValue("@ExportId", exportDetail.ExportId);
+            command.Parameters.AddWithValue("@ProductId", exportDetail.ProductId);
+            command.Parameters.AddWithValue("@Quantity", exportDetail.Quantity);
+            command.Parameters.AddWithValue("@UnitPrice", exportDetail.UnitPrice);
+            return command.ExecuteNonQuery() > 0;
         }
 
         public bool Update(IModel model)
         {
             if (model is not ExportDetail exportDetail) return false;
-            return ExecuteNonQuery(@"UPDATE EXPORTDETAIL 
-                                         SET ProductId = @ProductId, Quantity = @Quantity, UnitPrice = @UnitPrice
-                                         WHERE Id = @Id", exportDetail);
+            using var connection = _connectDB.GetConnection();
+            connection.Open();
+            using var command = new SqlCommand(@"UPDATE EXPORTDETAIL 
+                                                     SET ProductId = @ProductId, Quantity = @Quantity, UnitPrice = @UnitPrice
+                                                     WHERE Id = @Id", connection);
+            command.Parameters.AddWithValue("@ProductId", exportDetail.ProductId);
+            command.Parameters.AddWithValue("@Quantity", exportDetail.Quantity);
+            command.Parameters.AddWithValue("@UnitPrice", exportDetail.UnitPrice);
+            command.Parameters.AddWithValue("@Id", exportDetail.Id);
+            return command.ExecuteNonQuery() > 0;
         }
 
         public bool Delete(object id)
         {
-            return ExecuteNonQuery(@"DELETE FROM EXPORTDETAIL WHERE Id = @Id", id: id);
+            using var connection = _connectDB.GetConnection();
+            connection.Open();
+            using var command = new SqlCommand(@"DELETE FROM EXPORTDETAIL WHERE Id = @Id", connection);
+            command.Parameters.AddWithValue("@Id", id);
+            return command.ExecuteNonQuery() > 0;
         }
 
         public bool IsExist(object id)
         {
-            return ExecuteScalar<int>(@"SELECT COUNT(*) FROM EXPORTDETAIL WHERE Id = @Id", id: id) > 0;
+            using var connection = _connectDB.GetConnection();
+            connection.Open();
+            using var command = new SqlCommand(@"SELECT COUNT(*) FROM EXPORTDETAIL WHERE Id = @Id", connection);
+            command.Parameters.AddWithValue("@Id", id);
+            var result = command.ExecuteScalar();
+            return result != null && (int)result > 0;
         }
 
         public bool IsExist(IModel model)
@@ -79,19 +78,29 @@ namespace PhoneWarehouse.Controllers
         {
             Items.Clear();
             using var connection = _connectDB.GetConnection();
-            using var command = CreateCommand(connection, @"SELECT E.Id, E.ExportId, U.FirstName AS Employee, C.FirstName AS Customer, 
-                                                                E2.ExportDate AS Date, P.ProductName AS Product, E.Quantity, E.ProductId, 
-                                                                E.UnitPrice, P.ListPrice, E.Quantity * E.UnitPrice AS TotalPrice 
-                                                                FROM ExportDetail E
-                                                                LEFT JOIN Export E2 ON E.ExportId = E2.Id
-                                                                LEFT JOIN [User] U ON E2.EmployeeId = U.Id
-                                                                LEFT JOIN Customer C ON E2.CustomerId = C.Id
-                                                                LEFT JOIN Product P ON E.ProductId = P.Id");
+            using var command = new SqlCommand(@"SELECT E.Id, E.ExportId, U.FirstName, C.FirstName, 
+                                                     E2.ExportDate, P.ProductName, E.Quantity, E.UnitPrice
+                                                     FROM ExportDetail E
+                                                     JOIN Export E2 ON E.ExportId = E2.Id
+                                                     JOIN [User] U ON E2.EmployeeId = U.Id
+                                                     JOIN Customer C ON E2.CustomerId = C.Id
+                                                     JOIN Product P ON E.ProductId = P.Id", connection);
             connection.Open();
             using var reader = command.ExecuteReader();
             while (reader.Read())
             {
-                Items.Add(MapReaderToExportDetail(reader));
+                Items.Add(new ExportDetail
+                {
+                    Id = reader.GetInt32(0),
+                    ExportId = reader.GetInt32(1),
+                    Employee = new User { FirstName = reader.GetString(2) },
+                    Customer = new Customer { FirstName = reader.GetString(3) },
+                    Export = new Export { ExportDate = reader.GetDateTime(4) },
+                    Product = new Product { ProductName = reader.GetString(5) },
+                    Quantity = reader.GetInt32(6),
+                    UnitPrice = reader.GetDecimal(7),
+
+                });
             }
             return Items.Count > 0;
         }
@@ -112,11 +121,19 @@ namespace PhoneWarehouse.Controllers
         {
             using var connection = _connectDB.GetConnection();
             connection.Open();
-            using var command = CreateCommand(connection, @"SELECT Id, ExportId, ProductId, Quantity, UnitPrice
-                                                                FROM EXPORTDETAIL 
-                                                                WHERE Id = @Id", id: id);
+            using var command = new SqlCommand(@"SELECT Id, ExportId, ProductId, Quantity, UnitPrice
+                                                     FROM EXPORTDETAIL 
+                                                     WHERE Id = @Id", connection);
+            command.Parameters.AddWithValue("@Id", id);
             using var reader = command.ExecuteReader();
-            return reader.Read() ? MapReaderToExportDetail(reader) : null;
+            return reader.Read() ? new ExportDetail
+            {
+                Id = reader.GetInt32(0),
+                ExportId = reader.GetInt32(1),
+                ProductId = reader.GetInt32(2),
+                Quantity = reader.GetInt32(3),
+                UnitPrice = reader.GetDecimal(4),
+            } : null;
         }
 
         public bool Upsert(IModel model)
@@ -154,61 +171,94 @@ namespace PhoneWarehouse.Controllers
         {
             using var connection = _connectDB.GetConnection();
             connection.Open();
-            using var checkCommand = CreateCommand(connection, @"SELECT Id FROM EXPORT WHERE CustomerId = @CustomerId AND CAST(ExportDate AS DATE) = @ExportDate", exportModel: exportModel);
+            using var checkCommand = new SqlCommand(@"SELECT Id FROM EXPORT WHERE CustomerId = @CustomerId AND CAST(ExportDate AS DATE) = @ExportDate", connection);
+            checkCommand.Parameters.AddWithValue("@CustomerId", exportModel.CustomerId);
+            checkCommand.Parameters.AddWithValue("@ExportDate", exportModel.ExportDate.Date);
             var existingId = checkCommand.ExecuteScalar();
             if (existingId != null)
             {
                 return Convert.ToInt32(existingId);
             }
-            using var insertCommand = CreateCommand(connection, @"INSERT INTO EXPORT (CustomerId, EmployeeId, ExportDate) 
-                                                                      VALUES (@CustomerId, @EmployeeId, @ExportDate);
-                                                                      SELECT SCOPE_IDENTITY();", exportModel: exportModel);
+            using var insertCommand = new SqlCommand(@"INSERT INTO EXPORT (CustomerId, EmployeeId, ExportDate) 
+                                                           VALUES (@CustomerId, @EmployeeId, @ExportDate);
+                                                           SELECT SCOPE_IDENTITY();", connection);
+            insertCommand.Parameters.AddWithValue("@CustomerId", exportModel.CustomerId);
+            insertCommand.Parameters.AddWithValue("@EmployeeId", exportModel.EmployeeId);
+            insertCommand.Parameters.AddWithValue("@ExportDate", exportModel.ExportDate.Date);
             var insertedId = insertCommand.ExecuteScalar();
             return insertedId != null ? Convert.ToInt32(insertedId) : 0;
         }
 
         public int SelectCustomerIdByExportId(int exportId)
         {
-            return ExecuteScalar<int>("SELECT CustomerId FROM EXPORT WHERE Id = @Id", id: exportId);
+            using var connection = _connectDB.GetConnection();
+            connection.Open();
+            using var command = new SqlCommand("SELECT CustomerId FROM EXPORT WHERE Id = @Id", connection);
+            command.Parameters.AddWithValue("@Id", exportId);
+            var result = command.ExecuteScalar();
+            return result != null ? (int)result : 0;
         }
 
         public int SelectEmployeeIdByExportId(int exportId)
         {
-            return ExecuteScalar<int>("SELECT EmployeeId FROM EXPORT WHERE Id = @Id", id: exportId);
+            using var connection = _connectDB.GetConnection();
+            connection.Open();
+            using var command = new SqlCommand("SELECT EmployeeId FROM EXPORT WHERE Id = @Id", connection);
+            command.Parameters.AddWithValue("@Id", exportId);
+            var result = command.ExecuteScalar();
+            return result != null ? (int)result : 0;
         }
 
         public DateTime SelectDateByExportId(int exportId)
         {
-            return ExecuteScalar<DateTime>("SELECT ExportDate FROM EXPORT WHERE Id = @Id", id: exportId);
-        }
-
-        private bool ExecuteNonQuery(string query, ExportDetail exportDetail = null, object id = null)
-        {
             using var connection = _connectDB.GetConnection();
             connection.Open();
-            using var command = CreateCommand(connection, query, exportDetail, id);
-            return command.ExecuteNonQuery() > 0;
-        }
-
-        private T ExecuteScalar<T>(string query, ExportDetail exportDetail = null, object id = null, Export exportModel = null)
-        {
-            using var connection = _connectDB.GetConnection();
-            connection.Open();
-            using var command = CreateCommand(connection, query, exportDetail, id, exportModel);
+            using var command = new SqlCommand("SELECT ExportDate FROM EXPORT WHERE Id = @Id", connection);
+            command.Parameters.AddWithValue("@Id", exportId);
             var result = command.ExecuteScalar();
-            return result != null ? (T)result : default;
+            return result != null ? (DateTime)result : DateTime.MinValue;
         }
 
-        private ExportDetail MapReaderToExportDetail(SqlDataReader reader)
+        public int SaveExport(int customerId, int employeeId, DateTime exportDate)
         {
-            return new ExportDetail
+            using var connection = _connectDB.GetConnection();
+            connection.Open();
+            using var command = new SqlCommand(@"INSERT INTO EXPORT (CustomerId, EmployeeId, ExportDate)
+                                                     OUTPUT INSERTED.Id
+                                                     VALUES (@CustomerId, @EmployeeId, @ExportDate)", connection);
+            command.Parameters.AddWithValue("@CustomerId", customerId);
+            command.Parameters.AddWithValue("@EmployeeId", employeeId);
+            command.Parameters.AddWithValue("@ExportDate", exportDate);
+            return (int)command.ExecuteScalar();
+        }
+
+        public void SaveExportDetail(int exportId, int productId, int quantity, decimal unitPrice)
+        {
+            using var connection = _connectDB.GetConnection();
+            connection.Open();
+
+            // Kiểm tra số lượng tồn kho
+            using (var checkCommand = new SqlCommand(@"SELECT StockBalance FROM CurrentStock WHERE ProductId = @ProductId", connection))
             {
-                Id = reader.GetInt32(0),
-                ExportId = reader.GetInt32(1),
-                ProductId = reader.GetInt32(2),
-                Quantity = reader.GetInt32(3),
-                UnitPrice = reader.GetDecimal(4),
-            };
+                checkCommand.Parameters.AddWithValue("@ProductId", productId);
+                var stockBalance = (int)checkCommand.ExecuteScalar();
+
+                if (stockBalance < quantity)
+                {
+                    throw new InvalidOperationException("Số lượng tồn kho không đủ để xuất.");
+                }
+            }
+
+            // Lưu thông tin vào ExportDetail nếu đủ tồn kho
+            using (var command = new SqlCommand(@"INSERT INTO EXPORTDETAIL (ExportId, ProductId, Quantity, UnitPrice)
+                                             VALUES (@ExportId, @ProductId, @Quantity, @UnitPrice)", connection))
+            {
+                command.Parameters.AddWithValue("@ExportId", exportId);
+                command.Parameters.AddWithValue("@ProductId", productId);
+                command.Parameters.AddWithValue("@Quantity", quantity);
+                command.Parameters.AddWithValue("@UnitPrice", unitPrice);
+                command.ExecuteNonQuery();
+            }
         }
     }
 }

@@ -46,6 +46,7 @@
             reportToolStripMenuItem1 = new ToolStripMenuItem();
             phiếuNhậppdfToolStripMenuItem = new ToolStripMenuItem();
             phiếuXuấtpdfToolStripMenuItem = new ToolStripMenuItem();
+            currentStockToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -70,27 +71,27 @@
             // LoginToolStripMenuItem
             // 
             LoginToolStripMenuItem.Name = "LoginToolStripMenuItem";
-            LoginToolStripMenuItem.Size = new Size(359, 44);
+            LoginToolStripMenuItem.Size = new Size(265, 44);
             LoginToolStripMenuItem.Text = "Đăng nhập";
             LoginToolStripMenuItem.Click += LoginToolStripMenuItem_Click;
             // 
             // LogoutToolStripMenuItem
             // 
             LogoutToolStripMenuItem.Name = "LogoutToolStripMenuItem";
-            LogoutToolStripMenuItem.Size = new Size(359, 44);
+            LogoutToolStripMenuItem.Size = new Size(265, 44);
             LogoutToolStripMenuItem.Text = "Đăng xuất";
             LogoutToolStripMenuItem.Click += LogoutToolStripMenuItem_Click;
             // 
             // exitToolStripMenuItem
             // 
             exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            exitToolStripMenuItem.Size = new Size(359, 44);
+            exitToolStripMenuItem.Size = new Size(265, 44);
             exitToolStripMenuItem.Text = "Thoát";
             exitToolStripMenuItem.Click += exitToolStripMenuItem_Click;
             // 
             // manageToolStripMenuItem
             // 
-            manageToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { productToolStripMenuItem, importToolStripMenuItem, exportToolStripMenuItem, supplierToolStripMenuItem, employeeToolStripMenuItem, customerToolStripMenuItem, categoryToolStripMenuItem1 });
+            manageToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { productToolStripMenuItem, importToolStripMenuItem, exportToolStripMenuItem, supplierToolStripMenuItem, employeeToolStripMenuItem, customerToolStripMenuItem, categoryToolStripMenuItem1, currentStockToolStripMenuItem });
             manageToolStripMenuItem.Name = "manageToolStripMenuItem";
             manageToolStripMenuItem.Size = new Size(117, 38);
             manageToolStripMenuItem.Text = "Quản lý";
@@ -100,7 +101,7 @@
             // 
             productToolStripMenuItem.Name = "productToolStripMenuItem";
             productToolStripMenuItem.Size = new Size(359, 44);
-            productToolStripMenuItem.Text = "Tồn kho";
+            productToolStripMenuItem.Text = "Sản phẩm";
             productToolStripMenuItem.Click += productToolStripMenuItem_Click;
             // 
             // importToolStripMenuItem
@@ -169,14 +170,21 @@
             // phiếuNhậppdfToolStripMenuItem
             // 
             phiếuNhậppdfToolStripMenuItem.Name = "phiếuNhậppdfToolStripMenuItem";
-            phiếuNhậppdfToolStripMenuItem.Size = new Size(359, 44);
+            phiếuNhậppdfToolStripMenuItem.Size = new Size(323, 44);
             phiếuNhậppdfToolStripMenuItem.Text = "Phiếu nhập(.pdf)";
             // 
             // phiếuXuấtpdfToolStripMenuItem
             // 
             phiếuXuấtpdfToolStripMenuItem.Name = "phiếuXuấtpdfToolStripMenuItem";
-            phiếuXuấtpdfToolStripMenuItem.Size = new Size(359, 44);
+            phiếuXuấtpdfToolStripMenuItem.Size = new Size(323, 44);
             phiếuXuấtpdfToolStripMenuItem.Text = "Phiếu xuất(.pdf)";
+            // 
+            // currentStockToolStripMenuItem
+            // 
+            currentStockToolStripMenuItem.Name = "currentStockToolStripMenuItem";
+            currentStockToolStripMenuItem.Size = new Size(359, 44);
+            currentStockToolStripMenuItem.Text = "Tồn kho";
+            currentStockToolStripMenuItem.Click += currentStockToolStripMenuItem_Click;
             // 
             // HomeView
             // 
@@ -217,5 +225,6 @@
         private ToolStripMenuItem phiếuNhậppdfToolStripMenuItem;
         private ToolStripMenuItem phiếuXuấtpdfToolStripMenuItem;
         public ToolStripMenuItem LoginToolStripMenuItem;
+        private ToolStripMenuItem currentStockToolStripMenuItem;
     }
 }

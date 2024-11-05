@@ -18,7 +18,7 @@ namespace PhoneWarehouse.Views
         private readonly ImportController _importController;
         private readonly UserController _userController;
         private readonly SupplierController _supplierController;
-
+        int selectedId;
         public ImportView(int Id_account)
         {
             InitializeComponent();
@@ -42,6 +42,9 @@ namespace PhoneWarehouse.Views
             cbSupplier.DataSource = _supplierController.GetSuplliers();
             cbSupplier.DisplayMember = "SupplierName";
             cbSupplier.ValueMember = "Id";
+
+            var dataTable = CreateDataTable();
+            dataGridViewImportShow.DataSource = dataTable;
         }
 
         private void dataGridViewImport_CellValueChanged(object sender, DataGridViewCellEventArgs e)
@@ -96,6 +99,7 @@ namespace PhoneWarehouse.Views
                 {
                     dataTable.Rows.Add(
                         importDetail.Id,
+                        importDetail.ImportId,
                         importDetail.Supplier.SupplierName,
                         importDetail.Employee.FirstName,
                         importDetail.Import.ImportDate,
@@ -115,6 +119,7 @@ namespace PhoneWarehouse.Views
         {
             var dataTable = new DataTable();
             dataTable.Columns.Add("Id", typeof(int));
+            dataTable.Columns.Add("Số phiếu", typeof(int));
             dataTable.Columns.Add("Supplier", typeof(string));
             dataTable.Columns.Add("Employee", typeof(string));
             dataTable.Columns.Add("ImportDate", typeof(DateTime));
@@ -157,6 +162,88 @@ namespace PhoneWarehouse.Views
         {
             cbSupplier.SelectedIndex = -1;
             dataGridViewImport.Rows.Clear();
+        }
+
+        private void dataGridViewImport_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        {
+            if (dataGridViewImport.Columns[e.ColumnIndex].Name == "Quantity" ||
+                dataGridViewImport.Columns[e.ColumnIndex].Name == "UnitPrice")
+            {
+                if (e.RowIndex >= 0 && e.RowIndex < dataGridViewImport.Rows.Count)
+                {
+                    string inputValue = e.FormattedValue.ToString();
+                    if (decimal.TryParse(inputValue, out decimal value))
+                    {
+                        if (dataGridViewImport.Columns[e.ColumnIndex].Name == "Quantity" && value < 0)
+                        {
+                            dataGridViewImport.Rows[e.RowIndex].Cells[e.ColumnIndex].ErrorText = "Số lượng nhập vào không được âm";
+                            e.Cancel = true; // Ngăn chặn việc nhập giá trị
+                        }
+                        else if (dataGridViewImport.Columns[e.ColumnIndex].Name == "UnitPrice" && value < 0)
+                        {
+                            dataGridViewImport.Rows[e.RowIndex].Cells[e.ColumnIndex].ErrorText = "Giá nhập vào không được âm";
+                            e.Cancel = true; // Ngăn chặn việc nhập giá trị
+                        }
+                    }
+                    else
+                    {
+                        dataGridViewImport.Rows[e.RowIndex].Cells[e.ColumnIndex].ErrorText = "Nhập dữ liệu vào";
+                        e.Cancel = true; // Ngăn chặn việc nhập giá trị
+                    }
+                }
+            }
+        }
+
+        private void btnEdit_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Kiểm tra xem Id đã được chọn hay chưa
+                if (selectedId <= 0)
+                {
+                    MessageBox.Show("Hãy chọn 1 phiếu để chỉnh sửa.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Lấy giá trị từ các ô nhập liệu
+                int quantity = Convert.ToInt32(dataGridViewImport.CurrentRow.Cells["Quantity"].Value);
+                decimal unitPrice = Convert.ToDecimal(dataGridViewImport.CurrentRow.Cells["UnitPrice"].Value);
+
+                // Cập nhật thông tin import detail
+                bool result = _importController.UpdateImportDetail(selectedId, quantity, unitPrice);
+
+                if (result)
+                {
+                    MessageBox.Show("Chỉnh sửa thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    ShowData(); // Cập nhật lại dữ liệu hiển thị
+                }
+                else
+                {
+                    MessageBox.Show("Lỗi khi chỉnh sửa vui lòng kiểm tra lại.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void dataGridViewImportShow_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.RowIndex >= dataGridViewImportShow.Rows.Count)
+                return;
+
+            DataGridViewRow selectedRow = dataGridViewImportShow.Rows[e.RowIndex];
+
+            dataGridViewImport.Rows.Clear();
+
+            int rowIndex = dataGridViewImport.Rows.Add();
+            DataGridViewRow newRow = dataGridViewImport.Rows[rowIndex];
+
+            selectedId = Convert.ToInt32(selectedRow.Cells["Id"].Value);
+            newRow.Cells["ProductName"].Value = selectedRow.Cells["ProductName"].Value;
+            newRow.Cells["Quantity"].Value = selectedRow.Cells["Quantity"].Value;
+            newRow.Cells["UnitPrice"].Value = selectedRow.Cells["UnitPrice"].Value;
         }
     }
 }

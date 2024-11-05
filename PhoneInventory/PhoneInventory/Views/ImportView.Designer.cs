@@ -70,6 +70,7 @@
             dataGridViewImport.RowHeadersWidth = 51;
             dataGridViewImport.Size = new Size(1007, 1072);
             dataGridViewImport.TabIndex = 20;
+            dataGridViewImport.CellValidating += dataGridViewImport_CellValidating;
             dataGridViewImport.CellValueChanged += dataGridViewImport_CellValueChanged;
             // 
             // productCode
@@ -189,6 +190,7 @@
             btnEdit.TabIndex = 13;
             btnEdit.Text = "Edit";
             btnEdit.UseVisualStyleBackColor = true;
+            btnEdit.Click += btnEdit_Click;
             // 
             // btnSave
             // 
@@ -282,11 +284,12 @@
             dataGridViewImportShow.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridViewImportShow.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewImportShow.Dock = DockStyle.Right;
-            dataGridViewImportShow.Location = new Point(1015, 239);
+            dataGridViewImportShow.Location = new Point(1014, 239);
             dataGridViewImportShow.Name = "dataGridViewImportShow";
             dataGridViewImportShow.RowHeadersWidth = 82;
-            dataGridViewImportShow.Size = new Size(1519, 1072);
+            dataGridViewImportShow.Size = new Size(1520, 1072);
             dataGridViewImportShow.TabIndex = 52;
+            dataGridViewImportShow.CellClick += dataGridViewImportShow_CellClick;
             // 
             // ImportView
             // 

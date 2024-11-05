@@ -72,7 +72,7 @@ namespace PhoneWarehouse.Controllers
             Items.Clear();
             using var connection = _connectDB.GetConnection();
             connection.Open();
-            using var command = new SqlCommand(@"SELECT ip.Id, u.FirstName, sl.SupplierName, i.ImportDate, p.ProductName, ip.Quantity, ip.UnitPrice 
+            using var command = new SqlCommand(@"SELECT ip.Id, u.FirstName, sl.SupplierName, i.ImportDate, p.ProductName, ip.Quantity, ip.UnitPrice, ip.ImportId
                                                  FROM IMPORTDETAIL ip
                                                  JOIN IMPORT i ON i.Id = ip.ImportId
                                                  JOIN [USER] u ON u.Id = i.EmployeeId
@@ -84,25 +84,27 @@ namespace PhoneWarehouse.Controllers
             {
                 importDetails.Add(new ImportDetail
                 {
-                    Id = reader.GetInt32(0),                           // ip.Id
+                    Id = reader.GetInt32(0),                           
                     Employee = new User
                     {
-                        FirstName = reader.GetString(1)                // u.FirtName
+                        FirstName = reader.GetString(1)               
                     },
                     Supplier = new Supplier
                     {
-                        SupplierName = reader.GetString(2)             // sl.SupplierName
+                        SupplierName = reader.GetString(2)             
                     },
                     Import = new Import
                     {
-                        ImportDate = reader.GetDateTime(3)             // i.ImportDate
+                        ImportDate = reader.GetDateTime(3),                  
                     },
                     Product = new Product
                     {
-                        ProductName = reader.GetString(4)              // p.ProductName
+                        ProductName = reader.GetString(4)              
                     },
-                    Quantity = reader.GetInt32(5),                     // ip.Quantity
-                    UnitPrice = reader.GetDecimal(6)                   // ip.UnitPrice
+                    Quantity = reader.GetInt32(5),                   
+                    UnitPrice = reader.GetDecimal(6),
+                    ImportId = reader.GetInt32(7)
+
                 });
             }
             Items.AddRange(importDetails);
@@ -163,6 +165,19 @@ namespace PhoneWarehouse.Controllers
             command.Parameters.AddWithValue("@Quantity", quantity);
             command.Parameters.AddWithValue("@UnitPrice", unitPrice);
             command.ExecuteNonQuery();
+        }
+
+        public bool UpdateImportDetail(int id, int quantity, decimal unitprice)
+        {
+            using var connection = _connectDB.GetConnection();
+            connection.Open();
+            using var command = new SqlCommand(@"UPDATE IMPORTDETAIL 
+                                                     SET Quantity = @Quantity, UnitPrice = @UnitPrice
+                                                     WHERE Id = @Id", connection);
+            command.Parameters.AddWithValue("@Quantity", quantity);
+            command.Parameters.AddWithValue("@UnitPrice", unitprice);
+            command.Parameters.AddWithValue("@Id", id);
+            return command.ExecuteNonQuery() > 0;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using PhoneWarehouse.Models;
+﻿using PhoneInventory.Views;
+using PhoneWarehouse.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -143,6 +144,11 @@ namespace PhoneWarehouse.Views
         private void reportToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             // Implement report functionality here
+        }
+
+        private void currentStockToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowView(new CurrentStockView());
         }
     }
 }
