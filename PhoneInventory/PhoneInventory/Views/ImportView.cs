@@ -193,7 +193,6 @@ namespace PhoneWarehouse.Views
                 }
             }
         }
-
         private void btnEdit_Click(object sender, EventArgs e)
         {
             try
@@ -245,5 +244,6 @@ namespace PhoneWarehouse.Views
             newRow.Cells["Quantity"].Value = selectedRow.Cells["Quantity"].Value;
             newRow.Cells["UnitPrice"].Value = selectedRow.Cells["UnitPrice"].Value;
         }
+
     }
 }

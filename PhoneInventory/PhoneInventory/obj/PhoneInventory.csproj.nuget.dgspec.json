@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Loc\\Subject\\.net\\PhoneInventory\\PhoneInventory\\PhoneInventory\\PhoneInventory.csproj": {}
+    "C:\\Github\\PhoneInventory\\PhoneInventory\\PhoneInventory\\PhoneInventory.csproj": {}
   },
   "projects": {
-    "C:\\Loc\\Subject\\.net\\PhoneInventory\\PhoneInventory\\PhoneInventory\\PhoneInventory.csproj": {
+    "C:\\Github\\PhoneInventory\\PhoneInventory\\PhoneInventory\\PhoneInventory.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Loc\\Subject\\.net\\PhoneInventory\\PhoneInventory\\PhoneInventory\\PhoneInventory.csproj",
+        "projectUniqueName": "C:\\Github\\PhoneInventory\\PhoneInventory\\PhoneInventory\\PhoneInventory.csproj",
         "projectName": "PhoneInventory",
-        "projectPath": "C:\\Loc\\Subject\\.net\\PhoneInventory\\PhoneInventory\\PhoneInventory\\PhoneInventory.csproj",
-        "packagesPath": "C:\\Users\\loczxph\\.nuget\\packages\\",
-        "outputPath": "C:\\Loc\\Subject\\.net\\PhoneInventory\\PhoneInventory\\PhoneInventory\\obj\\",
+        "projectPath": "C:\\Github\\PhoneInventory\\PhoneInventory\\PhoneInventory\\PhoneInventory.csproj",
+        "packagesPath": "C:\\Users\\Acer\\.nuget\\packages\\",
+        "outputPath": "C:\\Github\\PhoneInventory\\PhoneInventory\\PhoneInventory\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\loczxph\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Acer\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],

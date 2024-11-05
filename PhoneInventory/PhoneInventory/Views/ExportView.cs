@@ -20,6 +20,7 @@ namespace PhoneInventory.Views
         private readonly ExportController _exportController;
         private readonly UserController _userController;
         private readonly CustomerController _customerController;
+        int selectedId;
         public ExportView(int id)
         {
             InitializeComponent();
@@ -29,9 +30,9 @@ namespace PhoneInventory.Views
             _customerController = new CustomerController();
             CurrentId_account = id;
 
-
-            ShowData();
             InitializeControls();
+            ShowData();
+
 
         }
 
@@ -45,6 +46,9 @@ namespace PhoneInventory.Views
             cbCustomer.DataSource = _customerController.GetCustomerNames();
             cbCustomer.DisplayMember = "FirstName";
             cbCustomer.ValueMember = "Id";
+
+            var dataTable = CreateDataTable();
+            dataGridViewExportShow.DataSource = dataTable;
         }
 
         private void dataGridViewExport_CellValueChanged(object sender, DataGridViewCellEventArgs e)
@@ -163,6 +167,89 @@ namespace PhoneInventory.Views
             cbCustomer.SelectedIndex = -1;
 
             dataGridViewExport.Rows.Clear();
+        }
+
+        private void dataGridViewExportShow_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.RowIndex >= dataGridViewExportShow.Rows.Count)
+                return;
+
+            DataGridViewRow selectedRow = dataGridViewExportShow.Rows[e.RowIndex];
+
+            dataGridViewExport.Rows.Clear();
+
+            int rowIndex = dataGridViewExport.Rows.Add();
+            DataGridViewRow newRow = dataGridViewExport.Rows[rowIndex];
+
+            selectedId = Convert.ToInt32(selectedRow.Cells["Id"].Value);
+            newRow.Cells["ProductName"].Value = selectedRow.Cells["ProductName"].Value;
+            newRow.Cells["Quantity"].Value = selectedRow.Cells["Quantity"].Value;
+            newRow.Cells["UnitPrice"].Value = selectedRow.Cells["UnitPrice"].Value;
+        }
+
+        private void dataGridViewExport_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        {
+            // Kiểm tra cột cần xác thực
+            if (dataGridViewExport.Columns[e.ColumnIndex].Name == "Quantity" ||
+                dataGridViewExport.Columns[e.ColumnIndex].Name == "UnitPrice")
+            {
+                if (e.RowIndex >= 0 && e.RowIndex < dataGridViewExport.Rows.Count)
+                {
+                    string inputValue = e.FormattedValue.ToString();
+                    if (decimal.TryParse(inputValue, out decimal value))
+                    {
+                        if (dataGridViewExport.Columns[e.ColumnIndex].Name == "Quantity" && value < 0)
+                        {
+                            dataGridViewExport.Rows[e.RowIndex].Cells[e.ColumnIndex].ErrorText = "Số lượng nhập vào không được âm";
+                            e.Cancel = true;
+                        }
+                        else if (dataGridViewExport.Columns[e.ColumnIndex].Name == "UnitPrice" && value < 0)
+                        {
+                            dataGridViewExport.Rows[e.RowIndex].Cells[e.ColumnIndex].ErrorText = "Giá nhập vào không được âm";
+                            e.Cancel = true;
+                        }
+                        else
+                        {
+                            dataGridViewExport.Rows[e.RowIndex].Cells[e.ColumnIndex].ErrorText = string.Empty;
+                        }
+                    }
+                    else
+                    {
+                        dataGridViewExport.Rows[e.RowIndex].Cells[e.ColumnIndex].ErrorText = "Nhập dữ liệu vào";
+                        e.Cancel = true;
+                    }
+                }
+            }
+        }
+        private void btnEdit_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (selectedId <= 0)
+                {
+                    MessageBox.Show("Hãy chọn 1 phiếu để chỉnh sửa.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                int quantity = Convert.ToInt32(dataGridViewExport.CurrentRow.Cells["Quantity"].Value);
+                decimal unitPrice = Convert.ToDecimal(dataGridViewExport.CurrentRow.Cells["UnitPrice"].Value);
+
+                bool result = _exportController.UpdateExportDetail(selectedId, quantity, unitPrice);
+
+                if (result)
+                {
+                    MessageBox.Show("Chỉnh sửa thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    ShowData();
+                }
+                else
+                {
+                    MessageBox.Show("Lỗi khi chỉnh sửa vui lòng kiểm tra lại.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }
