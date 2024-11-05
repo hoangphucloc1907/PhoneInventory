@@ -30,6 +30,12 @@
         {
             dataGridViewExportShow = new DataGridView();
             dataGridViewExport = new DataGridView();
+            productCode = new DataGridViewComboBoxColumn();
+            productName = new DataGridViewTextBoxColumn();
+            Stock = new DataGridViewTextBoxColumn();
+            Quantity = new DataGridViewTextBoxColumn();
+            unitPrice = new DataGridViewTextBoxColumn();
+            total = new DataGridViewTextBoxColumn();
             groupBox2 = new GroupBox();
             txtEmployeeName = new TextBox();
             label1 = new Label();
@@ -45,12 +51,7 @@
             btnDelete = new Button();
             btnEdit = new Button();
             btnSave = new Button();
-            productCode = new DataGridViewComboBoxColumn();
-            productName = new DataGridViewTextBoxColumn();
-            Stock = new DataGridViewTextBoxColumn();
-            Quantity = new DataGridViewTextBoxColumn();
-            unitPrice = new DataGridViewTextBoxColumn();
-            total = new DataGridViewTextBoxColumn();
+            btnExport = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridViewExportShow).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridViewExport).BeginInit();
             groupBox2.SuspendLayout();
@@ -67,6 +68,7 @@
             dataGridViewExportShow.RowHeadersWidth = 82;
             dataGridViewExportShow.Size = new Size(1519, 1072);
             dataGridViewExportShow.TabIndex = 56;
+            dataGridViewExportShow.CellClick += dataGridViewExportShow_CellClick;
             // 
             // dataGridViewExport
             // 
@@ -83,6 +85,52 @@
             dataGridViewExport.Size = new Size(1007, 1072);
             dataGridViewExport.TabIndex = 53;
             dataGridViewExport.CellValueChanged += dataGridViewExport_CellValueChanged;
+            // 
+            // productCode
+            // 
+            productCode.DataPropertyName = "ProductCode";
+            productCode.HeaderText = "Mã sản phẩm";
+            productCode.MinimumWidth = 6;
+            productCode.Name = "productCode";
+            productCode.Resizable = DataGridViewTriState.True;
+            productCode.SortMode = DataGridViewColumnSortMode.Automatic;
+            // 
+            // productName
+            // 
+            productName.DataPropertyName = "ProductName";
+            productName.HeaderText = "Tên sản phẩm";
+            productName.MinimumWidth = 6;
+            productName.Name = "productName";
+            productName.ReadOnly = true;
+            // 
+            // Stock
+            // 
+            Stock.HeaderText = "Tồn kho";
+            Stock.MinimumWidth = 10;
+            Stock.Name = "Stock";
+            Stock.ReadOnly = true;
+            // 
+            // Quantity
+            // 
+            Quantity.DataPropertyName = "Quantity";
+            Quantity.HeaderText = "Số lượng";
+            Quantity.MinimumWidth = 6;
+            Quantity.Name = "Quantity";
+            // 
+            // unitPrice
+            // 
+            unitPrice.DataPropertyName = "UnitPrice";
+            unitPrice.HeaderText = "Đơn giá";
+            unitPrice.MinimumWidth = 6;
+            unitPrice.Name = "unitPrice";
+            unitPrice.ReadOnly = true;
+            // 
+            // total
+            // 
+            total.DataPropertyName = "Total";
+            total.HeaderText = "Tổng giá";
+            total.MinimumWidth = 6;
+            total.Name = "total";
             // 
             // groupBox2
             // 
@@ -161,6 +209,7 @@
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(btnExport);
             groupBox1.Controls.Add(button5);
             groupBox1.Controls.Add(textBox4);
             groupBox1.Controls.Add(label4);
@@ -209,7 +258,7 @@
             // btnClear
             // 
             btnClear.Font = new Font("Segoe UI", 20F);
-            btnClear.Location = new Point(1333, 68);
+            btnClear.Location = new Point(1054, 81);
             btnClear.Margin = new Padding(5);
             btnClear.Name = "btnClear";
             btnClear.Size = new Size(250, 104);
@@ -221,7 +270,7 @@
             // btnDelete
             // 
             btnDelete.Font = new Font("Segoe UI", 20F);
-            btnDelete.Location = new Point(1014, 68);
+            btnDelete.Location = new Point(735, 81);
             btnDelete.Margin = new Padding(5);
             btnDelete.Name = "btnDelete";
             btnDelete.Size = new Size(250, 104);
@@ -232,18 +281,19 @@
             // btnEdit
             // 
             btnEdit.Font = new Font("Segoe UI", 20F);
-            btnEdit.Location = new Point(680, 68);
+            btnEdit.Location = new Point(401, 81);
             btnEdit.Margin = new Padding(5);
             btnEdit.Name = "btnEdit";
             btnEdit.Size = new Size(250, 104);
             btnEdit.TabIndex = 13;
             btnEdit.Text = "Edit";
             btnEdit.UseVisualStyleBackColor = true;
+            btnEdit.Click += btnEdit_Click;
             // 
             // btnSave
             // 
             btnSave.Font = new Font("Segoe UI", 20F);
-            btnSave.Location = new Point(343, 68);
+            btnSave.Location = new Point(64, 81);
             btnSave.Margin = new Padding(5);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(250, 104);
@@ -252,51 +302,17 @@
             btnSave.UseVisualStyleBackColor = true;
             btnSave.Click += btnSave_Click;
             // 
-            // productCode
+            // btnExport
             // 
-            productCode.DataPropertyName = "ProductCode";
-            productCode.HeaderText = "Mã sản phẩm";
-            productCode.MinimumWidth = 6;
-            productCode.Name = "productCode";
-            productCode.Resizable = DataGridViewTriState.True;
-            productCode.SortMode = DataGridViewColumnSortMode.Automatic;
-            // 
-            // productName
-            // 
-            productName.DataPropertyName = "ProductName";
-            productName.HeaderText = "Tên sản phẩm";
-            productName.MinimumWidth = 6;
-            productName.Name = "productName";
-            productName.ReadOnly = true;
-            // 
-            // Stock
-            // 
-            Stock.HeaderText = "Tồn kho";
-            Stock.MinimumWidth = 10;
-            Stock.Name = "Stock";
-            Stock.ReadOnly = true;
-            // 
-            // Quantity
-            // 
-            Quantity.DataPropertyName = "Quantity";
-            Quantity.HeaderText = "Số lượng";
-            Quantity.MinimumWidth = 6;
-            Quantity.Name = "Quantity";
-            // 
-            // unitPrice
-            // 
-            unitPrice.DataPropertyName = "UnitPrice";
-            unitPrice.HeaderText = "Đơn giá";
-            unitPrice.MinimumWidth = 6;
-            unitPrice.Name = "unitPrice";
-            unitPrice.ReadOnly = true;
-            // 
-            // total
-            // 
-            total.DataPropertyName = "Total";
-            total.HeaderText = "Tổng giá";
-            total.MinimumWidth = 6;
-            total.Name = "total";
+            btnExport.Font = new Font("Segoe UI", 20F);
+            btnExport.Location = new Point(1372, 81);
+            btnExport.Margin = new Padding(5);
+            btnExport.Name = "btnExport";
+            btnExport.Size = new Size(293, 104);
+            btnExport.TabIndex = 26;
+            btnExport.Text = "Export File";
+            btnExport.UseVisualStyleBackColor = true;
+            btnExport.Click += btnExport_Click;
             // 
             // ExportView
             // 
@@ -345,5 +361,6 @@
         private DataGridViewTextBoxColumn Quantity;
         private DataGridViewTextBoxColumn unitPrice;
         private DataGridViewTextBoxColumn total;
+        private Button btnExport;
     }
 }

@@ -105,7 +105,8 @@ namespace PhoneWarehouse.Views
                         importDetail.Import.ImportDate,
                         importDetail.Product.ProductName,
                         importDetail.Quantity,
-                        importDetail.UnitPrice);
+                        importDetail.UnitPrice,
+                        importDetail.UnitPrice * importDetail.Quantity);
                 }
                 dataGridViewImportShow.DataSource = dataTable;
             }
@@ -126,6 +127,7 @@ namespace PhoneWarehouse.Views
             dataTable.Columns.Add("ProductName", typeof(string));
             dataTable.Columns.Add("Quantity", typeof(int));
             dataTable.Columns.Add("UnitPrice", typeof(decimal));
+            dataTable.Columns.Add("Total", typeof(decimal));
             return dataTable;
         }
 
@@ -244,6 +246,44 @@ namespace PhoneWarehouse.Views
             newRow.Cells["ProductName"].Value = selectedRow.Cells["ProductName"].Value;
             newRow.Cells["Quantity"].Value = selectedRow.Cells["Quantity"].Value;
             newRow.Cells["UnitPrice"].Value = selectedRow.Cells["UnitPrice"].Value;
+        }
+
+        private void btnExport_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (dataGridViewImportShow.Rows.Count == 0)
+                {
+                    MessageBox.Show("No data available to export.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                using (SaveFileDialog sfd = new SaveFileDialog() { Filter = "CSV|*.csv", FileName = "ImportData.csv" })
+                {
+                    if (sfd.ShowDialog() == DialogResult.OK)
+                    {
+                        using (StreamWriter sw = new StreamWriter(sfd.FileName, false, Encoding.UTF8))
+                        {
+                            // Write the header
+                            var headers = dataGridViewImportShow.Columns.Cast<DataGridViewColumn>();
+                            sw.WriteLine(string.Join(",", headers.Select(column => column.HeaderText)));
+
+                            // Write the data
+                            foreach (DataGridViewRow row in dataGridViewImportShow.Rows)
+                            {
+                                var cells = row.Cells.Cast<DataGridViewCell>();
+                                sw.WriteLine(string.Join(",", cells.Select(cell => cell.Value?.ToString())));
+                            }
+                        }
+
+                        MessageBox.Show("Data exported successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred while exporting data: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

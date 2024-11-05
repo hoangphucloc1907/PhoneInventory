@@ -50,6 +50,7 @@
             label2 = new Label();
             label7 = new Label();
             dataGridViewImportShow = new DataGridView();
+            btnExport = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridViewImport).BeginInit();
             groupBox1.SuspendLayout();
             groupBox2.SuspendLayout();
@@ -112,6 +113,7 @@
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(btnExport);
             groupBox1.Controls.Add(button5);
             groupBox1.Controls.Add(textBox4);
             groupBox1.Controls.Add(label4);
@@ -160,7 +162,7 @@
             // btnClear
             // 
             btnClear.Font = new Font("Segoe UI", 20F);
-            btnClear.Location = new Point(1333, 68);
+            btnClear.Location = new Point(1069, 81);
             btnClear.Margin = new Padding(5);
             btnClear.Name = "btnClear";
             btnClear.Size = new Size(250, 104);
@@ -172,7 +174,7 @@
             // btnDelete
             // 
             btnDelete.Font = new Font("Segoe UI", 20F);
-            btnDelete.Location = new Point(1014, 68);
+            btnDelete.Location = new Point(750, 81);
             btnDelete.Margin = new Padding(5);
             btnDelete.Name = "btnDelete";
             btnDelete.Size = new Size(250, 104);
@@ -183,7 +185,7 @@
             // btnEdit
             // 
             btnEdit.Font = new Font("Segoe UI", 20F);
-            btnEdit.Location = new Point(680, 68);
+            btnEdit.Location = new Point(416, 81);
             btnEdit.Margin = new Padding(5);
             btnEdit.Name = "btnEdit";
             btnEdit.Size = new Size(250, 104);
@@ -195,7 +197,7 @@
             // btnSave
             // 
             btnSave.Font = new Font("Segoe UI", 20F);
-            btnSave.Location = new Point(343, 68);
+            btnSave.Location = new Point(79, 81);
             btnSave.Margin = new Padding(5);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(250, 104);
@@ -291,6 +293,18 @@
             dataGridViewImportShow.TabIndex = 52;
             dataGridViewImportShow.CellClick += dataGridViewImportShow_CellClick;
             // 
+            // btnExport
+            // 
+            btnExport.Font = new Font("Segoe UI", 20F);
+            btnExport.Location = new Point(1379, 81);
+            btnExport.Margin = new Padding(5);
+            btnExport.Name = "btnExport";
+            btnExport.Size = new Size(293, 104);
+            btnExport.TabIndex = 27;
+            btnExport.Text = "Export File";
+            btnExport.UseVisualStyleBackColor = true;
+            btnExport.Click += btnExport_Click;
+            // 
             // ImportView
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
@@ -337,5 +351,6 @@
         private TextBox txtEmployeeName;
         private Label label1;
         private DataGridView dataGridViewImportShow;
+        private Button btnExport;
     }
 }

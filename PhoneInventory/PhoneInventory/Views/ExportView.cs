@@ -20,6 +20,8 @@ namespace PhoneInventory.Views
         private readonly ExportController _exportController;
         private readonly UserController _userController;
         private readonly CustomerController _customerController;
+        int selectedId;
+
         public ExportView(int id)
         {
             InitializeComponent();
@@ -107,7 +109,8 @@ namespace PhoneInventory.Views
                         exportDetail.Export.ExportDate,
                         exportDetail.Product.ProductName,
                         exportDetail.Quantity,
-                        exportDetail.UnitPrice);
+                        exportDetail.UnitPrice,
+                        exportDetail.UnitPrice * exportDetail.Quantity);
                 }
                 dataGridViewExportShow.DataSource = dataTable;
             }
@@ -128,6 +131,7 @@ namespace PhoneInventory.Views
             dataTable.Columns.Add("ProductName", typeof(string));
             dataTable.Columns.Add("Quantity", typeof(int));
             dataTable.Columns.Add("UnitPrice", typeof(decimal));
+            dataTable.Columns.Add("Total", typeof(decimal));
             return dataTable;
         }
 
@@ -165,6 +169,91 @@ namespace PhoneInventory.Views
             cbCustomer.SelectedIndex = -1;
 
             dataGridViewExport.Rows.Clear();
+        }
+
+        private void dataGridViewExportShow_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.RowIndex >= dataGridViewExportShow.Rows.Count)
+                return;
+
+            DataGridViewRow selectedRow = dataGridViewExportShow.Rows[e.RowIndex];
+
+            dataGridViewExport.Rows.Clear();
+
+            int rowIndex = dataGridViewExport.Rows.Add();
+            DataGridViewRow newRow = dataGridViewExport.Rows[rowIndex];
+
+            selectedId = Convert.ToInt32(selectedRow.Cells["Id"].Value);
+            newRow.Cells["ProductName"].Value = selectedRow.Cells["ProductName"].Value;
+            newRow.Cells["Quantity"].Value = selectedRow.Cells["Quantity"].Value;
+            newRow.Cells["UnitPrice"].Value = selectedRow.Cells["UnitPrice"].Value;
+        }
+
+        private void btnEdit_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (selectedId <= 0)
+                {
+                    MessageBox.Show("Hãy chọn 1 phiếu để chỉnh sửa.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                int quantity = Convert.ToInt32(dataGridViewExport.CurrentRow.Cells["Quantity"].Value);
+
+                bool result = _exportController.UpdateExportDetail(selectedId, quantity);
+
+                if (result)
+                {
+                    MessageBox.Show("Chỉnh sửa thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    ShowData();
+                }
+                else
+                {
+                    MessageBox.Show("Lỗi khi chỉnh sửa vui lòng kiểm tra lại.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnExport_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (dataGridViewExportShow.Rows.Count == 0)
+                {
+                    MessageBox.Show("No data available to export.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                using (SaveFileDialog sfd = new SaveFileDialog() { Filter = "CSV|*.csv", FileName = "ExportData.csv" })
+                {
+                    if (sfd.ShowDialog() == DialogResult.OK)
+                    {
+                        using (StreamWriter sw = new StreamWriter(sfd.FileName, false, Encoding.UTF8))
+                        {
+                            // Write the header
+                            var headers = dataGridViewExportShow.Columns.Cast<DataGridViewColumn>();
+                            sw.WriteLine(string.Join(",", headers.Select(column => column.HeaderText)));
+
+                            // Write the data
+                            foreach (DataGridViewRow row in dataGridViewExportShow.Rows)
+                            {
+                                var cells = row.Cells.Cast<DataGridViewCell>();
+                                sw.WriteLine(string.Join(",", cells.Select(cell => cell.Value?.ToString())));
+                            }
+                        }
+                        MessageBox.Show("Data exported successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred while exporting data: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }
