@@ -17,7 +17,7 @@ namespace PhoneWarehouse.Views
     {
         private readonly HomeView _parentForm;
         private readonly UserController _userController;
-        public string Id_account { get; private set; }
+        public string Id_account { get; private set; } = string.Empty;
 
         public LoginView(HomeView parent)
         {
@@ -47,14 +47,13 @@ namespace PhoneWarehouse.Views
         {
             string account = txtAccount.Text;
             string password = txtPassword.Text;
-            string role = _userController.Login(account, password);
+            var loginResult = _userController.Login(account, password);
 
-            if (string.IsNullOrEmpty(role))
+            if (!string.IsNullOrEmpty(loginResult.role))
             {
                 _parentForm.log = this;
-                int userId = _userController.GetUserIdByUsername(account);
-                _parentForm.Id_account = userId;
-                _parentForm.UserRole = role;
+                _parentForm.Id_account = loginResult.id;
+                _parentForm.UserRole = loginResult.role;
 
                 MessageBox.Show("Đăng nhập thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 _parentForm.LoginToolStripMenuItem.Visible = false;

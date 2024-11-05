@@ -14,172 +14,135 @@ namespace PhoneWarehouse.Views
     //Stockin, out: số phiếu, nhà cc
     public partial class HomeView : Form
     {
-        private bool isLoggedIn = false;
-        public LoginView log;
-        public string UserRole { get; set; }
+        private bool _isLoggedIn = false;
+        public LoginView log { get; set; }
+        public string UserRole { get; set; } = string.Empty;
         public int Id_account { get; set; }
 
         public HomeView()
         {
             InitializeComponent();
-            LogoutToolStripMenuItem.Visible = false;
+            SetInitialControlStates();
         }
+
+        private void SetInitialControlStates()
+        {
+            LogoutToolStripMenuItem.Visible = false;
+            manageToolStripMenuItem.Enabled = false;
+            reportToolStripMenuItem1.Enabled = false;
+        }
+
         public void UpdateLoginStatus(bool status)
         {
-            isLoggedIn = status;
+            _isLoggedIn = status;
             LogoutToolStripMenuItem.Visible = status;
             LoginToolStripMenuItem.Visible = !status;
+            manageToolStripMenuItem.Enabled = status;
+            reportToolStripMenuItem1.Enabled = status;
+            employeeToolStripMenuItem.Visible = status && UserRole != "Employee";
         }
+
         public void LoginToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            LoginView log = new LoginView(this);
-            log.MdiParent = this;
+            ShowLoginView();
+        }
+
+        private void ShowLoginView()
+        {
+            var log = new LoginView(this)
+            {
+                MdiParent = this
+            };
             log.Show();
         }
 
         private void LogoutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Đã đăng xuất thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            CloseAllMdiChildren();
+            ResetLoginStatus();
+            ShowLoginView();
+        }
 
-            foreach (Form form in this.MdiChildren)
+        private void CloseAllMdiChildren()
+        {
+            foreach (Form form in MdiChildren)
             {
                 form.Close();
             }
-            isLoggedIn = false;
-            UpdateLoginStatus(isLoggedIn);
+        }
 
+        private void ResetLoginStatus()
+        {
+            _isLoggedIn = false;
+            UpdateLoginStatus(_isLoggedIn);
             Id_account = 0;
             UserRole = string.Empty;
-
-            LoginView log = new LoginView(this);
-            log.MdiParent = this;
-            log.Show();
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            DialogResult result = MessageBox.Show("Bạn có chắc muốn thoát ứng dụng", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (result == DialogResult.Yes)
+            if (ConfirmExit())
             {
-                this.Close();
+                Close();
             }
         }
+
+        private bool ConfirmExit()
+        {
+            var result = MessageBox.Show("Bạn có chắc muốn thoát ứng dụng", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            return result == DialogResult.Yes;
+        }
+
         private void employeeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //if (!isLoggedIn)
-            //{
-            //    MessageBox.Show("Bạn phải đăng nhập trước khi sử dụng tính năng này!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            //    Login log = new Login(this);
-            //    log.MdiParent = this;
-            //    log.Show();
-            //}
-            //else
-            //{
-            UserView us = new UserView(UserRole);
-            us.MdiParent = this;
-            us.Show();
-            //}
+            ShowView(new UserView(UserRole));
         }
+
         private void productToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //if (!isLoggedIn)
-            //{
-            //    MessageBox.Show("Bạn phải đăng nhập trước khi sử dụng tính năng này!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            //    Login log = new Login(this);
-            //    log.MdiParent = this;
-            //    log.Show();
-            //}
-            //else
-            //{
-            ProductView product = new ProductView();
-            product.MdiParent = this;
-            product.Show();
-            //}
+            ShowView(new ProductView());
         }
 
         private void importToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //if (!isLoggedIn)
-            //{
-            //    MessageBox.Show("Bạn phải đăng nhập trước khi sử dụng tính năng này!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            //    Login log = new Login(this);
-            //    log.MdiParent = this;
-            //    log.Show();
-            //}
-            //else
-            //{
-            ImportView im = new ImportView(Id_account);
-            im.MdiParent = this;
-            im.Show();
-            //}
+            ShowView(new ImportView(Id_account));
         }
 
         private void exportToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //if (!isLoggedIn)
-            //{
-            //    MessageBox.Show("Bạn phải đăng nhập trước khi sử dụng tính năng này!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            //    Login log = new Login(this);
-            //    log.MdiParent = this;
-            //    log.Show();
-            //}
-            //else
-            //{
-            ExportView ex = new ExportView(Id_account);
-            ex.MdiParent = this;
-            ex.Show();
-            //}
+            ShowView(new ExportView(Id_account));
         }
 
         private void supplierToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //if (!isLoggedIn)
-            //{
-            //    MessageBox.Show("Bạn phải đăng nhập trước khi sử dụng tính năng này!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            //    Login log = new Login(this);
-            //    log.MdiParent = this;
-            //    log.Show();
-            //}
-            //else
-            //{
-            SupplierView sup = new SupplierView();
-            sup.MdiParent = this;
-            sup.Show();
-            //}
+            ShowView(new SupplierView());
         }
 
         private void customerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //if (!isLoggedIn)
-            //{
-            //    MessageBox.Show("Bạn phải đăng nhập trước khi sử dụng tính năng này!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            //    Login log = new Login(this);
-            //    log.MdiParent = this;
-            //    log.Show();
-            //}
-            //else
-            //{
-            CustomerView cus = new CustomerView();
-            cus.MdiParent = this;
-            cus.Show();
-            //}
+            ShowView(new CustomerView());
         }
 
         private void categoryToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            //if (!isLoggedIn)
-            //{
-            //    MessageBox.Show("Bạn phải đăng nhập trước khi sử dụng tính năng này!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            //    Login log = new Login(this);
-            //    log.MdiParent = this;
-            //    log.Show();
-            //}
-            //else
-            //{
-            CategoryView category = new CategoryView();
-            category.MdiParent = this;
-            category.Show();
-            //}
+            ShowView(new CategoryView());
+        }
+
+        private void ShowView(Form view)
+        {
+            view.MdiParent = this;
+            view.Show();
+        }
+
+        private void manageToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Implement manage functionality here
+        }
+
+        private void reportToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            // Implement report functionality here
         }
     }
 }

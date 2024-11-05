@@ -181,24 +181,33 @@ namespace PhoneWarehouse.Controllers
             return builder.ToString();
         }
 
-        public string Login(string username, string password)
+        public (string role, int id) Login(string username, string password)
         {
             using var connection = _connectDB.GetConnection();
             connection.Open();
 
             if (!UserExists(username, connection))
             {
-                return "Tài khoản không có";
+                return (string.Empty, -1);
             }
 
             string hashedPassword = HashPassword(password);
-
             if (!PasswordMatches(username, hashedPassword, connection))
             {
-                return "Mật khẩu không đúng";
+                return (string.Empty, -1);
             }
 
-            return GetRole(username, hashedPassword, connection) ?? "Đăng nhập thất bại";
+            using var command = new SqlCommand("SELECT Role, Id FROM [USER] WHERE UserName = @UserName", connection);
+            command.Parameters.AddWithValue("@UserName", username);
+            using var reader = command.ExecuteReader();
+            if (reader.Read())
+            {
+                string role = reader.GetString(0);
+                int id = reader.GetInt32(1);
+                return (role, id);
+            }
+
+            return (string.Empty, -1);
         }
 
         private bool UserExists(string username, SqlConnection connection)
@@ -216,13 +225,7 @@ namespace PhoneWarehouse.Controllers
             return (int)command.ExecuteScalar() > 0;
         }
 
-        private string GetRole(string username, string hashedPassword, SqlConnection connection)
-        {
-            using var command = new SqlCommand("SELECT Role FROM [USER] WHERE UserName = @UserName AND Password = @Password", connection);
-            command.Parameters.AddWithValue("@UserName", username);
-            command.Parameters.AddWithValue("@Password", hashedPassword);
-            return command.ExecuteScalar() as string;
-        }
+        
 
         public int GetUserIdByUsername(string username)
         {

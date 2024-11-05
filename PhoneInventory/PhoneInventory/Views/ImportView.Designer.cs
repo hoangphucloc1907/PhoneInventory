@@ -28,125 +28,96 @@
         /// </summary>
         private void InitializeComponent()
         {
-            dataGridView1 = new DataGridView();
-            id_import = new DataGridViewTextBoxColumn();
-            ID = new DataGridViewTextBoxColumn();
-            Tong = new DataGridViewTextBoxColumn();
-            nameuser = new DataGridViewTextBoxColumn();
-            Day = new DataGridViewTextBoxColumn();
-            nameProduct = new DataGridViewTextBoxColumn();
+            dataGridViewImport = new DataGridView();
+            productCode = new DataGridViewComboBoxColumn();
+            productName = new DataGridViewTextBoxColumn();
             Quantity = new DataGridViewTextBoxColumn();
-            Amount = new DataGridViewTextBoxColumn();
-            Name = new DataGridViewTextBoxColumn();
+            unitPrice = new DataGridViewTextBoxColumn();
+            total = new DataGridViewTextBoxColumn();
             groupBox1 = new GroupBox();
             button5 = new Button();
             textBox4 = new TextBox();
             label4 = new Label();
-            button4 = new Button();
-            button3 = new Button();
-            button2 = new Button();
-            button1 = new Button();
+            btnClear = new Button();
+            btnDelete = new Button();
+            btnEdit = new Button();
+            btnSave = new Button();
             groupBox2 = new GroupBox();
-            txtTotal = new TextBox();
-            txtUnitPrice = new TextBox();
-            txtEmployeeId = new TextBox();
-            txtSupplierId = new TextBox();
-            txtQuantity = new TextBox();
-            txtProductId = new TextBox();
-            label9 = new Label();
-            dateImportDate = new DateTimePicker();
-            label8 = new Label();
-            label5 = new Label();
-            txtImportId = new TextBox();
-            label2 = new Label();
+            txtEmployeeName = new TextBox();
             label1 = new Label();
-            label3 = new Label();
-            label6 = new Label();
+            cbSupplier = new ComboBox();
+            dateImportDate = new DateTimePicker();
+            label2 = new Label();
             label7 = new Label();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            dataGridViewImportShow = new DataGridView();
+            ((System.ComponentModel.ISupportInitialize)dataGridViewImport).BeginInit();
             groupBox1.SuspendLayout();
             groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dataGridViewImportShow).BeginInit();
             SuspendLayout();
             // 
-            // dataGridView1
+            // dataGridViewImport
             // 
-            dataGridView1.AllowUserToAddRows = false;
-            dataGridView1.AllowUserToDeleteRows = false;
-            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Columns.AddRange(new DataGridViewColumn[] { id_import, ID, Tong, nameuser, Day, nameProduct, Quantity, Amount, Name });
-            dataGridView1.Dock = DockStyle.Fill;
-            dataGridView1.Location = new Point(0, 239);
-            dataGridView1.Margin = new Padding(5);
-            dataGridView1.Name = "dataGridView1";
-            dataGridView1.RowHeadersVisible = false;
-            dataGridView1.RowHeadersWidth = 51;
-            dataGridView1.Size = new Size(2534, 1072);
-            dataGridView1.TabIndex = 20;
+            dataGridViewImport.AllowUserToOrderColumns = true;
+            dataGridViewImport.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridViewImport.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewImport.Columns.AddRange(new DataGridViewColumn[] { productCode, productName, Quantity, unitPrice, total });
+            dataGridViewImport.Dock = DockStyle.Left;
+            dataGridViewImport.Location = new Point(0, 239);
+            dataGridViewImport.Margin = new Padding(5);
+            dataGridViewImport.Name = "dataGridViewImport";
+            dataGridViewImport.RowHeadersVisible = false;
+            dataGridViewImport.RowHeadersWidth = 51;
+            dataGridViewImport.Size = new Size(1007, 1072);
+            dataGridViewImport.TabIndex = 20;
+            dataGridViewImport.CellValueChanged += dataGridViewImport_CellValueChanged;
             // 
-            // id_import
+            // productCode
             // 
-            id_import.HeaderText = "ID";
-            id_import.MinimumWidth = 6;
-            id_import.Name = "id_import";
+            productCode.DataPropertyName = "ProductCode";
+            productCode.HeaderText = "Mã sản phẩm";
+            productCode.MinimumWidth = 6;
+            productCode.Name = "productCode";
+            productCode.Resizable = DataGridViewTriState.True;
+            productCode.SortMode = DataGridViewColumnSortMode.Automatic;
             // 
-            // ID
+            // productName
             // 
-            ID.HeaderText = "Số phiếu";
-            ID.MinimumWidth = 6;
-            ID.Name = "ID";
-            // 
-            // Tong
-            // 
-            Tong.HeaderText = "Nhà cung cấp";
-            Tong.MinimumWidth = 6;
-            Tong.Name = "Tong";
-            // 
-            // nameuser
-            // 
-            nameuser.HeaderText = "Người nhập";
-            nameuser.MinimumWidth = 6;
-            nameuser.Name = "nameuser";
-            // 
-            // Day
-            // 
-            Day.HeaderText = "Ngày nhập";
-            Day.MinimumWidth = 6;
-            Day.Name = "Day";
-            // 
-            // nameProduct
-            // 
-            nameProduct.HeaderText = "Tên sản phẩm";
-            nameProduct.MinimumWidth = 6;
-            nameProduct.Name = "nameProduct";
+            productName.DataPropertyName = "ProductName";
+            productName.HeaderText = "Tên sản phẩm";
+            productName.MinimumWidth = 6;
+            productName.Name = "productName";
             // 
             // Quantity
             // 
+            Quantity.DataPropertyName = "Quantity";
             Quantity.HeaderText = "Số lượng";
             Quantity.MinimumWidth = 6;
             Quantity.Name = "Quantity";
             // 
-            // Amount
+            // unitPrice
             // 
-            Amount.HeaderText = "Đơn giá";
-            Amount.MinimumWidth = 6;
-            Amount.Name = "Amount";
+            unitPrice.DataPropertyName = "UnitPrice";
+            unitPrice.HeaderText = "Đơn giá";
+            unitPrice.MinimumWidth = 6;
+            unitPrice.Name = "unitPrice";
             // 
-            // Name
+            // total
             // 
-            Name.HeaderText = "Tổng giá";
-            Name.MinimumWidth = 6;
-            Name.Name = "Name";
+            total.DataPropertyName = "Total";
+            total.HeaderText = "Tổng giá";
+            total.MinimumWidth = 6;
+            total.Name = "total";
             // 
             // groupBox1
             // 
             groupBox1.Controls.Add(button5);
             groupBox1.Controls.Add(textBox4);
             groupBox1.Controls.Add(label4);
-            groupBox1.Controls.Add(button4);
-            groupBox1.Controls.Add(button3);
-            groupBox1.Controls.Add(button2);
-            groupBox1.Controls.Add(button1);
+            groupBox1.Controls.Add(btnClear);
+            groupBox1.Controls.Add(btnDelete);
+            groupBox1.Controls.Add(btnEdit);
+            groupBox1.Controls.Add(btnSave);
             groupBox1.Dock = DockStyle.Bottom;
             groupBox1.Location = new Point(0, 1311);
             groupBox1.Margin = new Padding(5);
@@ -185,67 +156,59 @@
             label4.Text = "Tìm kiếm";
             label4.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // button4
+            // btnClear
             // 
-            button4.Font = new Font("Segoe UI", 20F);
-            button4.Location = new Point(1333, 68);
-            button4.Margin = new Padding(5);
-            button4.Name = "button4";
-            button4.Size = new Size(250, 104);
-            button4.TabIndex = 15;
-            button4.Text = "Clear All";
-            button4.UseVisualStyleBackColor = true;
+            btnClear.Font = new Font("Segoe UI", 20F);
+            btnClear.Location = new Point(1333, 68);
+            btnClear.Margin = new Padding(5);
+            btnClear.Name = "btnClear";
+            btnClear.Size = new Size(250, 104);
+            btnClear.TabIndex = 15;
+            btnClear.Text = "Clear All";
+            btnClear.UseVisualStyleBackColor = true;
+            btnClear.Click += btnClear_Click;
             // 
-            // button3
+            // btnDelete
             // 
-            button3.Font = new Font("Segoe UI", 20F);
-            button3.Location = new Point(1014, 68);
-            button3.Margin = new Padding(5);
-            button3.Name = "button3";
-            button3.Size = new Size(250, 104);
-            button3.TabIndex = 14;
-            button3.Text = "Xoá";
-            button3.UseVisualStyleBackColor = true;
+            btnDelete.Font = new Font("Segoe UI", 20F);
+            btnDelete.Location = new Point(1014, 68);
+            btnDelete.Margin = new Padding(5);
+            btnDelete.Name = "btnDelete";
+            btnDelete.Size = new Size(250, 104);
+            btnDelete.TabIndex = 14;
+            btnDelete.Text = "Delete";
+            btnDelete.UseVisualStyleBackColor = true;
             // 
-            // button2
+            // btnEdit
             // 
-            button2.Font = new Font("Segoe UI", 20F);
-            button2.Location = new Point(680, 68);
-            button2.Margin = new Padding(5);
-            button2.Name = "button2";
-            button2.Size = new Size(250, 104);
-            button2.TabIndex = 13;
-            button2.Text = "Sửa";
-            button2.UseVisualStyleBackColor = true;
+            btnEdit.Font = new Font("Segoe UI", 20F);
+            btnEdit.Location = new Point(680, 68);
+            btnEdit.Margin = new Padding(5);
+            btnEdit.Name = "btnEdit";
+            btnEdit.Size = new Size(250, 104);
+            btnEdit.TabIndex = 13;
+            btnEdit.Text = "Edit";
+            btnEdit.UseVisualStyleBackColor = true;
             // 
-            // button1
+            // btnSave
             // 
-            button1.Font = new Font("Segoe UI", 20F);
-            button1.Location = new Point(343, 68);
-            button1.Margin = new Padding(5);
-            button1.Name = "button1";
-            button1.Size = new Size(250, 104);
-            button1.TabIndex = 12;
-            button1.Text = "Thêm";
-            button1.UseVisualStyleBackColor = true;
+            btnSave.Font = new Font("Segoe UI", 20F);
+            btnSave.Location = new Point(343, 68);
+            btnSave.Margin = new Padding(5);
+            btnSave.Name = "btnSave";
+            btnSave.Size = new Size(250, 104);
+            btnSave.TabIndex = 12;
+            btnSave.Text = "Save";
+            btnSave.UseVisualStyleBackColor = true;
+            btnSave.Click += btnSave_Click;
             // 
             // groupBox2
             // 
-            groupBox2.Controls.Add(txtTotal);
-            groupBox2.Controls.Add(txtUnitPrice);
-            groupBox2.Controls.Add(txtEmployeeId);
-            groupBox2.Controls.Add(txtSupplierId);
-            groupBox2.Controls.Add(txtQuantity);
-            groupBox2.Controls.Add(txtProductId);
-            groupBox2.Controls.Add(label9);
-            groupBox2.Controls.Add(dateImportDate);
-            groupBox2.Controls.Add(label8);
-            groupBox2.Controls.Add(label5);
-            groupBox2.Controls.Add(txtImportId);
-            groupBox2.Controls.Add(label2);
+            groupBox2.Controls.Add(txtEmployeeName);
             groupBox2.Controls.Add(label1);
-            groupBox2.Controls.Add(label3);
-            groupBox2.Controls.Add(label6);
+            groupBox2.Controls.Add(cbSupplier);
+            groupBox2.Controls.Add(dateImportDate);
+            groupBox2.Controls.Add(label2);
             groupBox2.Controls.Add(label7);
             groupBox2.Dock = DockStyle.Top;
             groupBox2.Location = new Point(0, 0);
@@ -254,116 +217,48 @@
             groupBox2.TabIndex = 39;
             groupBox2.TabStop = false;
             // 
-            // txtTotal
+            // txtEmployeeName
             // 
-            txtTotal.Font = new Font("Segoe UI", 15F);
-            txtTotal.Location = new Point(2171, 169);
-            txtTotal.Margin = new Padding(5);
-            txtTotal.Name = "txtTotal";
-            txtTotal.Size = new Size(274, 61);
-            txtTotal.TabIndex = 53;
+            txtEmployeeName.Font = new Font("Segoe UI", 13F);
+            txtEmployeeName.Location = new Point(320, 93);
+            txtEmployeeName.Name = "txtEmployeeName";
+            txtEmployeeName.Size = new Size(338, 54);
+            txtEmployeeName.TabIndex = 51;
             // 
-            // txtUnitPrice
+            // label1
             // 
-            txtUnitPrice.Font = new Font("Segoe UI", 15F);
-            txtUnitPrice.Location = new Point(1616, 163);
-            txtUnitPrice.Margin = new Padding(5);
-            txtUnitPrice.Name = "txtUnitPrice";
-            txtUnitPrice.Size = new Size(228, 61);
-            txtUnitPrice.TabIndex = 52;
+            label1.Font = new Font("Segoe UI", 15F);
+            label1.Location = new Point(60, 81);
+            label1.Margin = new Padding(5, 0, 5, 0);
+            label1.Name = "label1";
+            label1.Size = new Size(283, 64);
+            label1.TabIndex = 50;
+            label1.Text = "Nhân viên";
+            label1.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // txtEmployeeId
+            // cbSupplier
             // 
-            txtEmployeeId.Font = new Font("Segoe UI", 15F);
-            txtEmployeeId.Location = new Point(342, 148);
-            txtEmployeeId.Margin = new Padding(5);
-            txtEmployeeId.Name = "txtEmployeeId";
-            txtEmployeeId.Size = new Size(245, 61);
-            txtEmployeeId.TabIndex = 51;
-            // 
-            // txtSupplierId
-            // 
-            txtSupplierId.Font = new Font("Segoe UI", 15F);
-            txtSupplierId.Location = new Point(947, 39);
-            txtSupplierId.Margin = new Padding(5);
-            txtSupplierId.Name = "txtSupplierId";
-            txtSupplierId.Size = new Size(275, 61);
-            txtSupplierId.TabIndex = 50;
-            // 
-            // txtQuantity
-            // 
-            txtQuantity.Font = new Font("Segoe UI", 15F);
-            txtQuantity.Location = new Point(947, 146);
-            txtQuantity.Margin = new Padding(5);
-            txtQuantity.Name = "txtQuantity";
-            txtQuantity.Size = new Size(275, 61);
-            txtQuantity.TabIndex = 49;
-            // 
-            // txtProductId
-            // 
-            txtProductId.Font = new Font("Segoe UI", 15F);
-            txtProductId.Location = new Point(1616, 39);
-            txtProductId.Margin = new Padding(5);
-            txtProductId.Name = "txtProductId";
-            txtProductId.Size = new Size(228, 61);
-            txtProductId.TabIndex = 48;
-            // 
-            // label9
-            // 
-            label9.Font = new Font("Segoe UI", 15F);
-            label9.Location = new Point(1332, 39);
-            label9.Margin = new Padding(5, 0, 5, 0);
-            label9.Name = "label9";
-            label9.Size = new Size(292, 61);
-            label9.TabIndex = 47;
-            label9.Text = "Tên sản phẩm";
-            label9.TextAlign = ContentAlignment.MiddleCenter;
+            cbSupplier.Font = new Font("Segoe UI", 13F);
+            cbSupplier.FormattingEnabled = true;
+            cbSupplier.Location = new Point(1252, 81);
+            cbSupplier.Name = "cbSupplier";
+            cbSupplier.Size = new Size(359, 55);
+            cbSupplier.TabIndex = 49;
             // 
             // dateImportDate
             // 
             dateImportDate.Font = new Font("Segoe UI", 15F);
             dateImportDate.Format = DateTimePickerFormat.Short;
-            dateImportDate.Location = new Point(2171, 47);
+            dateImportDate.Location = new Point(2027, 75);
             dateImportDate.Margin = new Padding(5);
             dateImportDate.Name = "dateImportDate";
             dateImportDate.Size = new Size(274, 61);
             dateImportDate.TabIndex = 46;
             // 
-            // label8
-            // 
-            label8.Font = new Font("Segoe UI", 15F);
-            label8.Location = new Point(1935, 163);
-            label8.Margin = new Padding(5, 0, 5, 0);
-            label8.Name = "label8";
-            label8.Size = new Size(184, 67);
-            label8.TabIndex = 45;
-            label8.Text = "Tổng giá";
-            label8.TextAlign = ContentAlignment.MiddleCenter;
-            // 
-            // label5
-            // 
-            label5.Font = new Font("Segoe UI", 15F);
-            label5.Location = new Point(667, 146);
-            label5.Margin = new Padding(5, 0, 5, 0);
-            label5.Name = "label5";
-            label5.Size = new Size(187, 61);
-            label5.TabIndex = 42;
-            label5.Text = "Số lượng";
-            label5.TextAlign = ContentAlignment.MiddleCenter;
-            // 
-            // txtImportId
-            // 
-            txtImportId.Font = new Font("Segoe UI", 15F);
-            txtImportId.Location = new Point(329, 31);
-            txtImportId.Margin = new Padding(5);
-            txtImportId.Name = "txtImportId";
-            txtImportId.Size = new Size(224, 61);
-            txtImportId.TabIndex = 41;
-            // 
             // label2
             // 
             label2.Font = new Font("Segoe UI", 15F);
-            label2.Location = new Point(654, 31);
+            label2.Location = new Point(898, 78);
             label2.Margin = new Padding(5, 0, 5, 0);
             label2.Name = "label2";
             label2.Size = new Size(283, 64);
@@ -371,43 +266,10 @@
             label2.Text = "Nhà cung cấp";
             label2.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // label1
-            // 
-            label1.Font = new Font("Segoe UI", 15F);
-            label1.Location = new Point(95, 9);
-            label1.Margin = new Padding(5, 0, 5, 0);
-            label1.Name = "label1";
-            label1.Size = new Size(185, 91);
-            label1.TabIndex = 38;
-            label1.Text = "Số phiếu";
-            label1.TextAlign = ContentAlignment.MiddleCenter;
-            // 
-            // label3
-            // 
-            label3.Font = new Font("Segoe UI", 15F);
-            label3.Location = new Point(95, 133);
-            label3.Margin = new Padding(5, 0, 5, 0);
-            label3.Name = "label3";
-            label3.Size = new Size(237, 91);
-            label3.TabIndex = 40;
-            label3.Text = "Người nhập";
-            label3.TextAlign = ContentAlignment.MiddleCenter;
-            // 
-            // label6
-            // 
-            label6.Font = new Font("Segoe UI", 15F);
-            label6.Location = new Point(1343, 148);
-            label6.Margin = new Padding(5, 0, 5, 0);
-            label6.Name = "label6";
-            label6.Size = new Size(176, 70);
-            label6.TabIndex = 43;
-            label6.Text = "Đơn giá";
-            label6.TextAlign = ContentAlignment.MiddleCenter;
-            // 
             // label7
             // 
             label7.Font = new Font("Segoe UI", 15F);
-            label7.Location = new Point(1935, 39);
+            label7.Location = new Point(1709, 73);
             label7.Margin = new Padding(5, 0, 5, 0);
             label7.Name = "label7";
             label7.Size = new Size(226, 69);
@@ -415,61 +277,62 @@
             label7.Text = "Ngày nhập";
             label7.TextAlign = ContentAlignment.MiddleCenter;
             // 
+            // dataGridViewImportShow
+            // 
+            dataGridViewImportShow.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridViewImportShow.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewImportShow.Dock = DockStyle.Right;
+            dataGridViewImportShow.Location = new Point(1015, 239);
+            dataGridViewImportShow.Name = "dataGridViewImportShow";
+            dataGridViewImportShow.RowHeadersWidth = 82;
+            dataGridViewImportShow.Size = new Size(1519, 1072);
+            dataGridViewImportShow.TabIndex = 52;
+            // 
             // ImportView
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(2534, 1529);
-            Controls.Add(dataGridView1);
+            Controls.Add(dataGridViewImportShow);
+            Controls.Add(dataGridViewImport);
             Controls.Add(groupBox2);
             Controls.Add(groupBox1);
             Margin = new Padding(5);
+            Name = "ImportView";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "StockIn";
             WindowState = FormWindowState.Maximized;
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dataGridViewImport).EndInit();
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
             groupBox2.ResumeLayout(false);
             groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)dataGridViewImportShow).EndInit();
             ResumeLayout(false);
         }
 
         #endregion
-        private DataGridView dataGridView1;
-        private DataGridViewTextBoxColumn id_import;
-        private DataGridViewTextBoxColumn ID;
-        private DataGridViewTextBoxColumn Tong;
-        private DataGridViewTextBoxColumn nameuser;
-        private DataGridViewTextBoxColumn Day;
-        private DataGridViewTextBoxColumn nameProduct;
-        private DataGridViewTextBoxColumn Quantity;
-        private DataGridViewTextBoxColumn Amount;
-        private DataGridViewTextBoxColumn Name;
+        private DataGridView dataGridViewImport;
         private GroupBox groupBox1;
         private Button button5;
         private TextBox textBox4;
         private Label label4;
-        private Button button4;
-        private Button button3;
-        private Button button2;
-        private Button button1;
+        private Button btnClear;
+        private Button btnDelete;
+        private Button btnEdit;
+        private Button btnSave;
         private GroupBox groupBox2;
-        private TextBox txtTotal;
-        private TextBox txtUnitPrice;
-        private TextBox txtEmployeeId;
-        private TextBox txtSupplierId;
-        private TextBox txtQuantity;
-        private TextBox txtProductId;
-        private Label label9;
         private DateTimePicker dateImportDate;
-        private Label label8;
-        private Label label5;
-        private TextBox txtImportId;
         private Label label2;
-        private Label label1;
-        private Label label3;
-        private Label label6;
         private Label label7;
+        private ComboBox cbSupplier;
+        private DataGridViewComboBoxColumn productCode;
+        private DataGridViewTextBoxColumn productName;
+        private DataGridViewTextBoxColumn Quantity;
+        private DataGridViewTextBoxColumn unitPrice;
+        private DataGridViewTextBoxColumn total;
+        private TextBox txtEmployeeName;
+        private Label label1;
+        private DataGridView dataGridViewImportShow;
     }
 }

@@ -20,53 +20,57 @@ namespace PhoneWarehouse.Controllers
             _connectDB = new ConnectDB();
         }
 
-        private SqlCommand CreateCommand(SqlConnection connection, string query, Product product = null, object id = null, string keyword = null)
-        {
-            var command = new SqlCommand(query, connection);
-            if (product != null)
-            {
-                command.Parameters.AddWithValue("@Id", product.Id);
-                command.Parameters.AddWithValue("@CategoryId", product.CategoryId);
-                command.Parameters.AddWithValue("@ProductCode", product.ProductCode);
-                command.Parameters.AddWithValue("@ProductName", product.ProductName);
-                command.Parameters.AddWithValue("@StandardCost", product.StandardCost);
-                command.Parameters.AddWithValue("@ListPrice", product.ListPrice);
-                command.Parameters.AddWithValue("@Description", product.Description);
-            }
-            if (id != null)
-            {
-                command.Parameters.AddWithValue("@Id", id);
-            }
-            if (keyword != null)
-            {
-                command.Parameters.AddWithValue("@Keyword", $"%{keyword}%");
-            }
-            return command;
-        }
-
         public bool Create(IModel model)
         {
             if (model is not Product product) return false;
-            return ExecuteNonQuery(@"INSERT INTO PRODUCT (CategoryId, ProductCode, ProductName, StandardCost, ListPrice, Description)
-                                         VALUES (@CategoryId, @ProductCode, @ProductName, @StandardCost, @ListPrice, @Description)", product);
+            using var connection = _connectDB.GetConnection();
+            connection.Open();
+            using var command = new SqlCommand(@"INSERT INTO PRODUCT (CategoryId, ProductCode, ProductName, StandardCost, ListPrice, Description)
+                                                     VALUES (@CategoryId, @ProductCode, @ProductName, @StandardCost, @ListPrice, @Description)", connection);
+            command.Parameters.AddWithValue("@CategoryId", product.CategoryId);
+            command.Parameters.AddWithValue("@ProductCode", product.ProductCode);
+            command.Parameters.AddWithValue("@ProductName", product.ProductName);
+            command.Parameters.AddWithValue("@StandardCost", product.StandardCost);
+            command.Parameters.AddWithValue("@ListPrice", product.ListPrice);
+            command.Parameters.AddWithValue("@Description", product.Description);
+            return command.ExecuteNonQuery() > 0;
         }
 
         public bool Update(IModel model)
         {
             if (model is not Product product) return false;
-            return ExecuteNonQuery(@"UPDATE PRODUCT 
-                                         SET CategoryId = @CategoryId, ProductCode = @ProductCode, ProductName = @ProductName, StandardCost = @StandardCost, ListPrice = @ListPrice, Description = @Description
-                                         WHERE Id = @Id", product);
+            using var connection = _connectDB.GetConnection();
+            connection.Open();
+            using var command = new SqlCommand(@"UPDATE PRODUCT 
+                                                     SET CategoryId = @CategoryId, ProductCode = @ProductCode, ProductName = @ProductName, StandardCost = @StandardCost, ListPrice = @ListPrice, Description = @Description
+                                                     WHERE Id = @Id", connection);
+            command.Parameters.AddWithValue("@CategoryId", product.CategoryId);
+            command.Parameters.AddWithValue("@ProductCode", product.ProductCode);
+            command.Parameters.AddWithValue("@ProductName", product.ProductName);
+            command.Parameters.AddWithValue("@StandardCost", product.StandardCost);
+            command.Parameters.AddWithValue("@ListPrice", product.ListPrice);
+            command.Parameters.AddWithValue("@Description", product.Description);
+            command.Parameters.AddWithValue("@Id", product.Id);
+            return command.ExecuteNonQuery() > 0;
         }
 
         public bool Delete(object id)
         {
-            return ExecuteNonQuery(@"DELETE FROM PRODUCT WHERE Id = @Id", id: id);
+            using var connection = _connectDB.GetConnection();
+            connection.Open();
+            using var command = new SqlCommand(@"DELETE FROM PRODUCT WHERE Id = @Id", connection);
+            command.Parameters.AddWithValue("@Id", id);
+            return command.ExecuteNonQuery() > 0;
         }
 
         public bool IsExist(object id)
         {
-            return ExecuteScalar<int>(@"SELECT COUNT(*) FROM PRODUCT WHERE Id = @Id", id: id) > 0;
+            using var connection = _connectDB.GetConnection();
+            connection.Open();
+            using var command = new SqlCommand(@"SELECT COUNT(*) FROM PRODUCT WHERE Id = @Id", connection);
+            command.Parameters.AddWithValue("@Id", id);
+            var result = command.ExecuteScalar();
+            return result != null && (int)result > 0;
         }
 
         public bool IsExist(IModel model)
@@ -79,12 +83,21 @@ namespace PhoneWarehouse.Controllers
         {
             Items.Clear();
             using var connection = _connectDB.GetConnection();
-            using var command = CreateCommand(connection, @"SELECT * FROM PRODUCT");
+            using var command = new SqlCommand(@"SELECT * FROM PRODUCT", connection);
             connection.Open();
             using var reader = command.ExecuteReader();
             while (reader.Read())
             {
-                Items.Add(MapReaderToProduct(reader));
+                Items.Add(new Product
+                {
+                    Id = reader.GetInt32(0),
+                    CategoryId = reader.GetInt32(1),
+                    ProductCode = reader.GetString(2),
+                    ProductName = reader.GetString(3),
+                    StandardCost = reader.GetDecimal(4),
+                    ListPrice = reader.GetDecimal(5),
+                    Description = reader.GetString(6)
+                });
             }
             return Items.Count > 0;
         }
@@ -101,15 +114,25 @@ namespace PhoneWarehouse.Controllers
             return false;
         }
 
-        public IModel Read(object id)
+        public IModel? Read(object id)
         {
             using var connection = _connectDB.GetConnection();
             connection.Open();
-            using var command = CreateCommand(connection, @"SELECT Id, CategoryId, ProductCode, ProductName, StandardCost, ListPrice, Description
-                                                                FROM PRODUCT 
-                                                                WHERE Id = @Id", id: id);
+            using var command = new SqlCommand(@"SELECT Id, CategoryId, ProductCode, ProductName, StandardCost, ListPrice, Description
+                                                     FROM PRODUCT 
+                                                     WHERE Id = @Id", connection);
+            command.Parameters.AddWithValue("@Id", id);
             using var reader = command.ExecuteReader();
-            return reader.Read() ? MapReaderToProduct(reader) : null;
+            return reader.Read() ? new Product
+            {
+                Id = reader.GetInt32(0),
+                CategoryId = reader.GetInt32(1),
+                ProductCode = reader.GetString(2),
+                ProductName = reader.GetString(3),
+                StandardCost = reader.GetDecimal(4),
+                ListPrice = reader.GetDecimal(5),
+                Description = reader.GetString(6)
+            } : null;
         }
 
         public bool Upsert(IModel model)
@@ -125,13 +148,23 @@ namespace PhoneWarehouse.Controllers
 
             using var connection = _connectDB.GetConnection();
             connection.Open();
-            using var command = CreateCommand(connection, @"SELECT Id, CategoryId, ProductCode, ProductName, StandardCost, ListPrice, Description
-                                                                FROM PRODUCT 
-                                                                WHERE ProductName LIKE @Keyword OR ProductCode LIKE @Keyword", keyword: keyword);
+            using var command = new SqlCommand(@"SELECT Id, CategoryId, ProductCode, ProductName, StandardCost, ListPrice, Description
+                                                     FROM PRODUCT 
+                                                     WHERE ProductName LIKE @Keyword OR ProductCode LIKE @Keyword", connection);
+            command.Parameters.AddWithValue("@Keyword", $"%{keyword}%");
             using var reader = command.ExecuteReader();
             while (reader.Read())
             {
-                searchResults.Add(MapReaderToProduct(reader));
+                searchResults.Add(new Product
+                {
+                    Id = reader.GetInt32(0),
+                    CategoryId = reader.GetInt32(1),
+                    ProductCode = reader.GetString(2),
+                    ProductName = reader.GetString(3),
+                    StandardCost = reader.GetDecimal(4),
+                    ListPrice = reader.GetDecimal(5),
+                    Description = reader.GetString(6)
+                });
             }
             return searchResults;
         }
@@ -163,12 +196,22 @@ namespace PhoneWarehouse.Controllers
 
         public int GetProductIdByName(string productName)
         {
-            return ExecuteScalar<int>("SELECT Id FROM PRODUCT WHERE ProductName = @ProductName", keyword: productName);
+            using var connection = _connectDB.GetConnection();
+            connection.Open();
+            using var command = new SqlCommand("SELECT Id FROM PRODUCT WHERE ProductName = @ProductName", connection);
+            command.Parameters.AddWithValue("@ProductName", productName);
+            var result = command.ExecuteScalar();
+            return result != null ? (int)result : 0;
         }
 
         public string GetProductNameById(int id)
         {
-            return ExecuteScalar<string>("SELECT ProductName FROM PRODUCT WHERE Id = @Id", id: id);
+            using var connection = _connectDB.GetConnection();
+            connection.Open();
+            using var command = new SqlCommand("SELECT ProductName FROM PRODUCT WHERE Id = @Id", connection);
+            command.Parameters.AddWithValue("@Id", id);
+            var result = command.ExecuteScalar();
+            return result != null ? (string)result : string.Empty;
         }
 
         public List<Product> GetProductNames()
@@ -176,7 +219,7 @@ namespace PhoneWarehouse.Controllers
             var products = new List<Product>();
             using var connection = _connectDB.GetConnection();
             connection.Open();
-            using var command = CreateCommand(connection, @"SELECT Id, ProductName, ListPrice FROM PRODUCT");
+            using var command = new SqlCommand(@"SELECT Id, ProductName, ListPrice FROM PRODUCT", connection);
             using var reader = command.ExecuteReader();
             while (reader.Read())
             {
@@ -190,35 +233,23 @@ namespace PhoneWarehouse.Controllers
             return products;
         }
 
-        private bool ExecuteNonQuery(string query, Product product = null, object id = null)
+        public List<Product> GetProductCode()
         {
+            var products = new List<Product>();
             using var connection = _connectDB.GetConnection();
             connection.Open();
-            using var command = CreateCommand(connection, query, product, id);
-            return command.ExecuteNonQuery() > 0;
-        }
-
-        private T ExecuteScalar<T>(string query, Product product = null, object id = null, string keyword = null)
-        {
-            using var connection = _connectDB.GetConnection();
-            connection.Open();
-            using var command = CreateCommand(connection, query, product, id, keyword);
-            var result = command.ExecuteScalar();
-            return result != null ? (T)result : default;
-        }
-
-        private Product MapReaderToProduct(SqlDataReader reader)
-        {
-            return new Product
+            using var command = new SqlCommand("SELECT Id, ProductCode, ProductName FROM PRODUCT", connection);
+            using var reader = command.ExecuteReader();
+            while (reader.Read())
             {
-                Id = reader.GetInt32(0),
-                CategoryId = reader.GetInt32(1),
-                ProductCode = reader.GetString(2),
-                ProductName = reader.GetString(3),
-                StandardCost = reader.GetDecimal(4),
-                ListPrice = reader.GetDecimal(5),
-                Description = reader.GetString(6)
-            };
+                products.Add(new Product
+                {
+                    Id = reader.GetInt32(0),
+                    ProductCode = reader.GetString(1),
+                    ProductName = reader.GetString(2) 
+                });
+            }
+            return products;
         }
     }
 }

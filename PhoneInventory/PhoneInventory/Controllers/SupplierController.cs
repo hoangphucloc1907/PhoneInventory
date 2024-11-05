@@ -20,51 +20,53 @@ namespace PhoneWarehouse.Controllers
             _connectDB = new ConnectDB();
         }
 
-        private SqlCommand CreateCommand(SqlConnection connection, string query, Supplier supplier = null, object id = null, string keyword = null)
-        {
-            var command = new SqlCommand(query, connection);
-            if (supplier != null)
-            {
-                command.Parameters.AddWithValue("@Id", supplier.Id);
-                command.Parameters.AddWithValue("@SupplierCode", supplier.SupplierCode);
-                command.Parameters.AddWithValue("@SupplierName", supplier.SupplierName);
-                command.Parameters.AddWithValue("@Address", supplier.Address);
-                command.Parameters.AddWithValue("@PhoneNumber", supplier.PhoneNumber);
-            }
-            if (id != null)
-            {
-                command.Parameters.AddWithValue("@Id", id);
-            }
-            if (keyword != null)
-            {
-                command.Parameters.AddWithValue("@Keyword", $"%{keyword}%");
-            }
-            return command;
-        }
-
         public bool Create(IModel model)
         {
             if (model is not Supplier supplier) return false;
-            return ExecuteNonQuery(@"INSERT INTO SUPPLIER (SupplierCode, SupplierName, Address, PhoneNumber)
-                                         VALUES (@SupplierCode, @SupplierName, @Address, @PhoneNumber)", supplier);
+            using var connection = _connectDB.GetConnection();
+            connection.Open();
+            using var command = new SqlCommand(@"INSERT INTO SUPPLIER (SupplierCode, SupplierName, Address, PhoneNumber)
+                                                     VALUES (@SupplierCode, @SupplierName, @Address, @PhoneNumber)", connection);
+            command.Parameters.AddWithValue("@SupplierCode", supplier.SupplierCode);
+            command.Parameters.AddWithValue("@SupplierName", supplier.SupplierName);
+            command.Parameters.AddWithValue("@Address", supplier.Address);
+            command.Parameters.AddWithValue("@PhoneNumber", supplier.PhoneNumber);
+            return command.ExecuteNonQuery() > 0;
         }
 
         public bool Update(IModel model)
         {
             if (model is not Supplier supplier) return false;
-            return ExecuteNonQuery(@"UPDATE SUPPLIER 
-                                         SET SupplierCode = @SupplierCode, SupplierName = @SupplierName, Address = @Address, PhoneNumber = @PhoneNumber
-                                         WHERE Id = @Id", supplier);
+            using var connection = _connectDB.GetConnection();
+            connection.Open();
+            using var command = new SqlCommand(@"UPDATE SUPPLIER 
+                                                     SET SupplierCode = @SupplierCode, SupplierName = @SupplierName, Address = @Address, PhoneNumber = @PhoneNumber
+                                                     WHERE Id = @Id", connection);
+            command.Parameters.AddWithValue("@SupplierCode", supplier.SupplierCode);
+            command.Parameters.AddWithValue("@SupplierName", supplier.SupplierName);
+            command.Parameters.AddWithValue("@Address", supplier.Address);
+            command.Parameters.AddWithValue("@PhoneNumber", supplier.PhoneNumber);
+            command.Parameters.AddWithValue("@Id", supplier.Id);
+            return command.ExecuteNonQuery() > 0;
         }
 
         public bool Delete(object id)
         {
-            return ExecuteNonQuery(@"DELETE FROM SUPPLIER WHERE Id = @Id", id: id);
+            using var connection = _connectDB.GetConnection();
+            connection.Open();
+            using var command = new SqlCommand(@"DELETE FROM SUPPLIER WHERE Id = @Id", connection);
+            command.Parameters.AddWithValue("@Id", id);
+            return command.ExecuteNonQuery() > 0;
         }
 
         public bool IsExist(object id)
         {
-            return ExecuteScalar<int>(@"SELECT COUNT(*) FROM SUPPLIER WHERE Id = @Id", id: id) > 0;
+            using var connection = _connectDB.GetConnection();
+            connection.Open();
+            using var command = new SqlCommand(@"SELECT COUNT(*) FROM SUPPLIER WHERE Id = @Id", connection);
+            command.Parameters.AddWithValue("@Id", id);
+            var result = command.ExecuteScalar();
+            return result != null && (int)result > 0;
         }
 
         public bool IsExist(IModel model)
@@ -77,12 +79,19 @@ namespace PhoneWarehouse.Controllers
         {
             Items.Clear();
             using var connection = _connectDB.GetConnection();
-            using var command = CreateCommand(connection, @"SELECT * FROM SUPPLIER");
+            using var command = new SqlCommand(@"SELECT * FROM SUPPLIER", connection);
             connection.Open();
             using var reader = command.ExecuteReader();
             while (reader.Read())
             {
-                Items.Add(MapReaderToSupplier(reader));
+                Items.Add(new Supplier
+                {
+                    Id = reader.GetInt32(0),
+                    SupplierCode = reader.GetString(1),
+                    SupplierName = reader.GetString(2),
+                    Address = reader.GetString(3),
+                    PhoneNumber = reader.GetString(4)
+                });
             }
             return Items.Count > 0;
         }
@@ -99,15 +108,23 @@ namespace PhoneWarehouse.Controllers
             return false;
         }
 
-        public IModel Read(object id)
+        public IModel? Read(object id)
         {
             using var connection = _connectDB.GetConnection();
             connection.Open();
-            using var command = CreateCommand(connection, @"SELECT Id, SupplierCode, SupplierName, Address, PhoneNumber
-                                                                FROM SUPPLIER 
-                                                                WHERE Id = @Id", id: id);
+            using var command = new SqlCommand(@"SELECT Id, SupplierCode, SupplierName, Address, PhoneNumber
+                                                     FROM SUPPLIER 
+                                                     WHERE Id = @Id", connection);
+            command.Parameters.AddWithValue("@Id", id);
             using var reader = command.ExecuteReader();
-            return reader.Read() ? MapReaderToSupplier(reader) : null;
+            return reader.Read() ? new Supplier
+            {
+                Id = reader.GetInt32(0),
+                SupplierCode = reader.GetString(1),
+                SupplierName = reader.GetString(2),
+                Address = reader.GetString(3),
+                PhoneNumber = reader.GetString(4)
+            } : null;
         }
 
         public bool Upsert(IModel model)
@@ -129,44 +146,41 @@ namespace PhoneWarehouse.Controllers
 
             using var connection = _connectDB.GetConnection();
             connection.Open();
-            using var command = CreateCommand(connection, @"SELECT Id, SupplierCode, SupplierName, Address, PhoneNumber
-                                                                FROM SUPPLIER 
-                                                                WHERE SupplierCode LIKE @Keyword OR SupplierName LIKE @Keyword", keyword: keyword);
+            using var command = new SqlCommand(@"SELECT Id, SupplierCode, SupplierName, Address, PhoneNumber
+                                                     FROM SUPPLIER 
+                                                     WHERE SupplierCode LIKE @Keyword OR SupplierName LIKE @Keyword", connection);
+            command.Parameters.AddWithValue("@Keyword", $"%{keyword}%");
             using var reader = command.ExecuteReader();
             while (reader.Read())
             {
-                searchResults.Add(MapReaderToSupplier(reader));
+                searchResults.Add(new Supplier
+                {
+                    Id = reader.GetInt32(0),
+                    SupplierCode = reader.GetString(1),
+                    SupplierName = reader.GetString(2),
+                    Address = reader.GetString(3),
+                    PhoneNumber = reader.GetString(4)
+                });
             }
             return searchResults;
         }
 
-        private bool ExecuteNonQuery(string query, Supplier supplier = null, object id = null)
+        public List<Supplier> GetSuplliers()
         {
+            List<Supplier> suppliers = new List<Supplier>();
             using var connection = _connectDB.GetConnection();
             connection.Open();
-            using var command = CreateCommand(connection, query, supplier, id);
-            return command.ExecuteNonQuery() > 0;
-        }
-
-        private T ExecuteScalar<T>(string query, Supplier supplier = null, object id = null, string keyword = null)
-        {
-            using var connection = _connectDB.GetConnection();
-            connection.Open();
-            using var command = CreateCommand(connection, query, supplier, id, keyword);
-            var result = command.ExecuteScalar();
-            return result != null ? (T)result : default;
-        }
-
-        private Supplier MapReaderToSupplier(SqlDataReader reader)
-        {
-            return new Supplier
+            using var command = new SqlCommand(@"SELECT Id, SupplierName FROM SUPPLIER", connection);
+            using var reader = command.ExecuteReader();
+            while (reader.Read())
             {
-                Id = reader.GetInt32(0),
-                SupplierCode = reader.GetString(1),
-                SupplierName = reader.GetString(2),
-                Address = reader.GetString(3),
-                PhoneNumber = reader.GetString(4)
-            };
+                suppliers.Add(new Supplier
+                {
+                    Id = reader.GetInt32(0),
+                    SupplierName = reader.GetString(1)
+                });
+            }
+            return suppliers;
         }
     }
 }

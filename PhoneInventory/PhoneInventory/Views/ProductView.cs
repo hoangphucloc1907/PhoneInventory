@@ -94,10 +94,14 @@ namespace PhoneWarehouse.Views
         }
         private Models.Product CreateProductFromInput()
         {
-            int categoryId = _categoryController.GetIdByCode(cbCategory.SelectedValue.ToString());
-            var selectedValue = cbCategory.SelectedValue?.ToString() ?? "Không có giá trị nào được chọn";
-            MessageBox.Show($"SelectedValue: {selectedValue}", "Thông tin SelectedValue", MessageBoxButtons.OK);
-            MessageBox.Show($"CategoryId: {categoryId}", "Thông tin CategoryId", MessageBoxButtons.OK);
+            if (cbCategory.SelectedValue == null)
+            {
+                MessageBox.Show("Không có giá trị nào được chọn", "Thông báo", MessageBoxButtons.OK);
+                return null;
+            }
+
+            int categoryId = (int)cbCategory.SelectedValue;
+
             return new Models.Product
             {
                 Id = id,
